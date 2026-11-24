@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thực hành MicroPython: Bật tắt LED với ESP32 (Wokwi)</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#5b6573;--bd:#dde1e7;--ac:#0b6bcb;--acx:#fff;--code:#10161d;--codetx:#e6edf3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1318;--card:#171c23;--tx:#e8ecf1;--mu:#9aa5b3;--bd:#2a323c;--ac:#4aa3ff;--acx:#06121f;--code:#0a0e13;--codetx:#e6edf3}}
+:root[data-theme="dark"]{--bg:#0f1318;--card:#171c23;--tx:#e8ecf1;--mu:#9aa5b3;--bd:#2a323c;--ac:#4aa3ff;--acx:#06121f;--code:#0a0e13;--codetx:#e6edf3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.55}
+header{padding:20px 16px 8px;max-width:1100px;margin:0 auto}
+h1{font-size:1.5rem;margin:0 0 4px}
+header p{margin:0;color:var(--mu)}
+main{max-width:1100px;margin:0 auto;padding:8px 16px 32px;display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
+h2{font-size:1.1rem;margin:0 0 10px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+input[type=text]{flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:.95rem}
+button,a.btn{padding:9px 14px;border:0;border-radius:8px;background:var(--ac);color:var(--acx);font-weight:600;font-size:.9rem;cursor:pointer;text-decoration:none;display:inline-block}
+button.sec,a.btn.sec{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+.frame{position:relative;width:100%;height:min(80vh,720px);min-height:480px;border-radius:10px;overflow:hidden;border:1px solid var(--bd)}
+iframe{width:100%;height:100%;border:0;display:block}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:800px){.grid{grid-template-columns:1fr}}
+.code{position:relative}
+pre{margin:0;background:var(--code);color:var(--codetx);padding:14px;border-radius:10px;overflow-x:auto;font-size:.82rem;line-height:1.5;max-height:340px}
+.code button{position:absolute;top:8px;right:8px;padding:5px 10px;font-size:.78rem}
+ol{margin:0;padding-left:20px}
+li{margin:4px 0}
+small,.mu{color:var(--mu)}
+button:disabled{opacity:.45;cursor:default}
+#fc .fb{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px 10px;margin:0 0 8px;font-size:.92rem}
+#fc svg{width:100%}#fc svg text{fill:currentColor;font-size:14px}#fc svg .s{font-size:12px;opacity:.75}
+#fc line,#fc path{stroke:currentColor;stroke-width:1.5;fill:none}
+#fc g rect,#fc g polygon{fill:none;stroke-width:1}
+#fc .g rect{stroke:#888}#fc .d polygon{stroke:#7F77DD}#fc .l rect{stroke:#1D9E75}
+#fc .a rect,#fc .a polygon{fill:#FAC775;stroke:#EF9F27;stroke-width:2.5}#fc .a text{fill:#412402}
+</style>
+</head>
+<body>
+<h1><a href="index.html">Home</a></h1>
+<header>
+  <h1>Luyện tập 1: bật tắt đèn LED với ESP32</h1>
+  <p>Mô phỏng trực tiếp bằng Wokwi, không cần thiết bị thật.</p>
+</header>
+<main>
+  <section class="card">
+    <h2>Trình mô phỏng Wokwi</h2>
+    <div class="row" style="margin-bottom:12px">
+      <input type="text" id="url" placeholder="Dán link dự án Wokwi của bạn, ví dụ https://wokwi.com/projects/1234567890">
+      <button id="load">Nạp dự án</button>
+      <button class="sec" id="tpl">Dự án mới (ESP32 MicroPython)</button>
+      <a class="btn sec" id="open" href="https://wokwi.com/projects/new/micropython-esp32" target="_blank" rel="noopener">Mở tab mới</a>
+    </div>
+    <div class="frame"><iframe id="sim" src="https://wokwi.com/projects/new/micropython-esp32" allow="clipboard-write; fullscreen" loading="lazy" title="Wokwi"></iframe></div>
+    <p class="mu" style="margin:10px 0 0;font-size:.88rem">Trang xem thử trên Claude chặn khung nhúng bên ngoài, nên khung có thể bị khóa: hãy bấm “Mở tab mới” để dùng Wokwi. Muốn nhúng được, hãy tải file HTML về và chạy trên máy hoặc đưa lên website của trường. Để có sẵn linh kiện cho sinh viên, hãy tạo dự án một lần (bước bên dưới), lưu lại rồi dán link vào ô trên.</p>
+  </section>
+
+  <section class="card">
+    <h2>Cách tạo dự án có sẵn LED (làm một lần)</h2>
+    <ol>
+      <li>Bấm “Dự án mới (ESP32 MicroPython)” hoặc “Mở tab mới”.</li>
+      <li>Mở tab <b>diagram.json</b>, xoá nội dung cũ, dán nội dung ở khung bên dưới.</li>
+      <li>Mở tab <b>main.py</b>, dán đoạn code MicroPython.</li>
+      <li>Bấm nút ▶ để chạy; LED sẽ nhấp nháy mỗi giây.</li>
+      <li>Đăng nhập Wokwi, bấm <b>Save</b>, copy link dự án rồi dán vào ô phía trên để nhúng lại.</li>
+    </ol>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>main.py (bật tắt LED)</h2>
+      <div class="code"><button data-c="py">Sao chép</button><pre id="py"></pre></div>
+      <p class="mu" style="font-size:.85rem;margin:8px 0 0">LED nối chân GPIO2 qua điện trở 220Ω, cực âm xuống GND.</p>
+    </section>
+    <section class="card">
+      <h2>diagram.json (sơ đồ nối dây)</h2>
+      <div class="code"><button data-c="dg">Sao chép</button><pre id="dg"></pre></div>
+    </section>
+  </div>
+  <section class="card">
+    <h2>Bài tập 2: bật tắt LED 3 lần</h2>
+    <p class="mu" style="margin:0 0 10px;font-size:.9rem">Tạo dự án Wokwi mới, dán sơ đồ nối dây vào tab <b>diagram.json</b> và code vào tab <b>main.py</b>. Sau khi LED chớp đủ 3 lần, chương trình tự dừng.</p>
+  </section>
+
+  <div class="grid">
+    <section class="card">
+      <h2>main.py (bật tắt LED 3 lần)</h2>
+      <div class="code"><button data-c="py5">Sao chép</button><pre id="py5"></pre></div>
+    </section>
+    <section class="card">
+      <h2>diagram.json (sơ đồ nối dây)</h2>
+      <div class="code"><button data-c="dg5">Sao chép</button><pre id="dg5"></pre></div>
+      <p class="mu" style="font-size:.85rem;margin:8px 0 0">LED nối chân GPIO2 qua điện trở 220Ω, cực âm xuống GND.</p>
+    </section>
+  </div>
+
+  <section class="card" id="fc">
+    <h2>Lưu đồ chạy từng bước của vòng lặp</h2>
+    <svg style="margin-bottom:12px" viewBox="0 0 680 630"><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" stroke="currentColor" stroke-width="1.5" fill="none"/></marker></defs><g id="fsv"></g></svg>
+    <div class="row" style="margin-bottom:10px"><button id="fbk">Lùi</button><button id="fnx">Tiếp</button><button id="fau">Chạy tự động</button><button id="fsk">Tua tới lần kiểm tra kế tiếp</button><button id="frs">Đặt lại</button></div>
+    <div class="mu" id="fno" style="font-size:.85rem;margin-bottom:6px"></div>
+    <pre id="fcd" style="margin-bottom:8px"></pre>
+    <div class="fb" id="fms"></div>
+    <div class="fb" id="fvr"></div>
+    <pre id="fse" style="margin-bottom:10px"></pre>
+  </section>
+</main>
+<script>
+var PY = [
+"from machine import Pin",
+"import time",
+"",
+"led = Pin(2, Pin.OUT)   # LED nối GPIO2",
+"",
+"while True:",
+"    led.value(1)        # bật LED",
+"    print('LED SANG')",
+"    time.sleep(1)",
+"    led.value(0)        # tắt LED",
+"    print('LED TAT')",
+"    time.sleep(1)"
+].join("\n");
+
+var DG = JSON.stringify({
+  version:1, author:"Giang vien", editor:"wokwi",
+  parts:[
+    {type:"board-esp32-devkit-c-v4", id:"esp", top:0, left:0, attrs:{env:"micropython-20231227-v1.22.0"}},
+    {type:"wokwi-led", id:"led1", top:-20, left:150, attrs:{color:"red"}},
+    {type:"wokwi-resistor", id:"r1", top:70, left:140, rotate:90, attrs:{value:"220"}}
+  ],
+  connections:[
+    ["esp:TX","$serialMonitor:RX",""],
+    ["esp:RX","$serialMonitor:TX",""],
+    ["esp:2","r1:1","green",[]],
+    ["r1:2","led1:A","green",[]],
+    ["led1:C","esp:GND.1","black",[]]
+  ],
+  dependencies:{}
+}, null, 2);
+
+document.getElementById("py").textContent = PY;
+document.getElementById("dg").textContent = DG;
+
+var sim = document.getElementById("sim"), openBtn = document.getElementById("open");
+function setSrc(u){ sim.src = u; openBtn.href = u; }
+
+document.getElementById("load").onclick = function(){
+  var v = document.getElementById("url").value.trim();
+  var m = v.match(/projects\/(?:new\/)?([A-Za-z0-9\-]+)/);
+  if(m){ setSrc("https://wokwi.com/projects/" + m[1]); }
+  else if(/^\d{8,}$/.test(v)){ setSrc("https://wokwi.com/projects/" + v); }
+  else { alert("Link chưa đúng. Ví dụ: https://wokwi.com/projects/1234567890"); }
+};
+document.getElementById("tpl").onclick = function(){ setSrc("https://wokwi.com/projects/new/micropython-esp32"); };
+
+document.querySelectorAll("[data-c]").forEach(function(b){
+  b.onclick = function(){
+    var t = document.getElementById(b.dataset.c).textContent;
+    var done = function(){ b.textContent = "Đã chép"; setTimeout(function(){ b.textContent = "Sao chép"; }, 1500); };
+    try{
+      navigator.clipboard.writeText(t).then(done, fallback);
+    }catch(e){ fallback(); }
+    function fallback(){
+      var ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta);
+      ta.select(); try{ document.execCommand("copy"); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  };
+});
+(function(){
+var $=function(i){return document.getElementById(i)};
+$("dg5").textContent=DG;
+$("py5").textContent=[
+"from machine import Pin",
+"import time",
+"",
+"led = Pin(2, Pin.OUT)   # LED nối GPIO2",
+"",
+"i = 0",
+"while i < 3:",
+"    i += 1",
+"    led.value(1)        # bật LED",
+"    print('LED SANG')",
+"    time.sleep(1)",
+"    led.value(0)        # tắt LED",
+"    print('LED TAT')",
+"    time.sleep(1)"
+].join("\n");
+var B=[["start",10,32,"Bắt đầu","","g","# Chương trình bắt đầu chạy"],
+["init",62,40,"Gán i bằng 0","i = 0","g","i = 0"],
+["cond",114,72,"i < 3 ?","","d","while i < 3:"],
+["inc",206,40,"Tăng i thêm 1","i += 1","g","    i += 1"],
+["on",266,40,"Bật LED","led.value(1)","l","    led.value(1)        # bật LED"],
+["p1",326,40,"In ra Serial","print('LED SANG')","g","    print('LED SANG')"],
+["s1",386,40,"Chờ 1 giây","time.sleep(1)","g","    time.sleep(1)"],
+["off",446,40,"Tắt LED","led.value(0)","l","    led.value(0)        # tắt LED"],
+["p2",506,40,"In ra Serial","print('LED TAT')","g","    print('LED TAT')"],
+["s2",566,40,"Chờ 1 giây","time.sleep(1)","g","    time.sleep(1)"],
+["end",134,32,"Kết thúc","","g","# i = 3 nên thoát vòng lặp, kết thúc"]];
+var O=B.slice(0,10).map(function(b){return b[0]});
+var h="";
+B.forEach(function(b,k){
+  var id=b[0],y=b[1],ht=b[2],t=b[3],s=b[4],c=b[5];
+  var x=id=="start"?140:id=="end"?385:90,w=(id=="start"||id=="end")?120:220,m=x+w/2;
+  h+='<g id="n-'+id+'" class="'+c+'" data-k="'+c+'">'+(id=="cond"?'<polygon points="200,'+y+' 295,'+(y+36)+' 200,'+(y+72)+' 105,'+(y+36)+'"/>':'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+ht+'" rx="'+(ht<33?16:8)+'"/>')
+   +'<text x="'+m+'" y="'+(id=="cond"?150:(s?y+14:y+ht/2))+'" text-anchor="middle" dominant-baseline="central">'+t.replace("<","&lt;")+'</text>'+(s?'<text class="s" x="'+m+'" y="'+(y+30)+'" text-anchor="middle" dominant-baseline="central">'+s+'</text>':"")+'</g>';
+  if(k<9)h+='<line x1="200" y1="'+(y+ht)+'" x2="200" y2="'+B[k+1][1]+'" marker-end="url(#ar)"/>';
+});
+h+='<line x1="295" y1="150" x2="385" y2="150" marker-end="url(#ar)"/><path d="M90 586L50 586L50 150L105 150" marker-end="url(#ar)"/><text class="s" x="210" y="198">Đúng</text><text class="s" x="340" y="140" text-anchor="middle">Sai</text><text class="s" x="56" y="578">quay lại</text>';
+$("fsv").innerHTML=h;
+
+function nxt(s){return s.pc=="cond"?(s.res?"inc":"end"):s.pc=="s2"?"cond":O[O.indexOf(s.pc)+1]}
+function ex(s){
+  switch(s.pc){
+    case"start":s.m="Chương trình bắt đầu. Mỗi lần bấm Tiếp là chạy một khối.";break;
+    case"init":s.i=0;s.m="Tạo biến đếm i và gán bằng 0.";break;
+    case"cond":s.res=s.i<3;s.m="Kiểm tra "+s.i+" < 3: "+(s.res?"đúng, vào thân vòng lặp.":"sai, thoát vòng lặp.");break;
+    case"inc":s.i++;s.m="Tăng i, bây giờ i = "+s.i+" (lần chớp thứ "+s.i+").";break;
+    case"on":s.led=1;s.c++;s.m="GPIO2 lên mức 1: LED sáng.";break;
+    case"p1":s.se.push("LED SANG");s.m="In LED SANG ra Serial.";break;
+    case"s1":s.t++;s.m="Chờ 1 giây, LED vẫn sáng ("+s.t+" giây).";break;
+    case"off":s.led=0;s.m="GPIO2 về mức 0: LED tắt.";break;
+    case"p2":s.se.push("LED TAT");s.m="In LED TAT ra Serial.";break;
+    case"s2":s.t++;s.m="Chờ 1 giây, LED tắt ("+s.t+" giây). Quay lại kiểm tra điều kiện.";break;
+    case"end":s.m="Dừng vì i = 3. LED chớp "+s.c+" lần, tổng "+s.t+" giây.";
+  }
+}
+var S0={pc:"start",i:"chưa có",led:0,t:0,c:0,n:1,se:[],m:""};ex(S0);
+var H=[S0],x=0,tm=null;
+function R(){
+  var s=H[x];
+  B.forEach(function(b){var g=$("n-"+b[0]);g.setAttribute("class",b[0]==s.pc?"a":g.getAttribute("data-k"))});
+  $("fno").textContent="Bước "+s.n;
+  $("fcd").textContent=B.filter(function(b){return b[0]==s.pc})[0][6];
+  $("fms").textContent=s.m;
+  $("fvr").textContent="i = "+s.i+"  |  LED: "+(s.led?"SÁNG":"TẮT")+"  |  thời gian: "+s.t+" giây  |  số lần sáng: "+s.c;
+  $("fse").textContent="Serial:\n"+(s.se.join("\n")||"(chưa có gì)");
+  $("fbk").disabled=!x;$("fnx").disabled=s.pc=="end"&&x==H.length-1;
+}
+function A(){clearInterval(tm);tm=null;$("fau").textContent="Chạy tự động"}
+function F(){
+  if(x<H.length-1){x++;return R()}
+  var p=H[x];if(p.pc=="end")return A();
+  var s=JSON.parse(JSON.stringify(p));s.pc=nxt(p);ex(s);s.n=p.n+1;H.push(s);x++;R();
+}
+$("fnx").onclick=function(){A();F()};
+$("fbk").onclick=function(){A();if(x){x--;R()}};
+$("frs").onclick=function(){A();H=[JSON.parse(JSON.stringify(S0))];x=0;R()};
+$("fau").onclick=function(){if(tm)return A();$("fau").textContent="Dừng";tm=setInterval(F,800)};
+$("fsk").onclick=function(){A();for(var k=0;k<30;k++){F();if(H[x].pc=="cond"||H[x].pc=="end")break}};
+R();
+})();
+</script>
+</body>
+</html>
