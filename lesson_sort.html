@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trực quan hóa thuật toán sắp xếp</title>
+<style>
+:root{--k:#cf222e;--ty:#0a7ea4;--fn:#8250df;--nu:#0550ae;--cm:#6e7781;--va:#953800;--bg:#f7f8fa;--card:#fff;--tx:#1d2330;--mut:#667085;--bd:#dde1e8;--acc:#2f6feb;--bar:#7c9cc8;--cmp:#f5a524;--swp:#e5484d;--piv:#8e4ec6;--ok:#30a46c;--hl:#fff3c4;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--k:#ff7b72;--ty:#79c0ff;--fn:#d2a8ff;--nu:#79c0ff;--cm:#8b949e;--va:#ffa657;--bg:#14171c;--card:#1e232b;--tx:#e8ecf2;--mut:#9aa4b2;--bd:#323a46;--acc:#6b9bff;--bar:#5f7fa8;--hl:#4a4220}}
+:root[data-theme="dark"]{--k:#ff7b72;--ty:#79c0ff;--fn:#d2a8ff;--nu:#79c0ff;--cm:#8b949e;--va:#ffa657;--bg:#14171c;--card:#1e232b;--tx:#e8ecf2;--mut:#9aa4b2;--bd:#323a46;--acc:#6b9bff;--bar:#5f7fa8;--hl:#4a4220}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:16px;max-width:1200px;margin-inline:auto}
+h1{font-size:22px;margin:0 0 12px}
+.ctl{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+label{display:flex;flex-direction:column;font-size:13px;color:var(--mut);gap:4px}
+input,select,button{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:7px 10px}
+input[type=number]{width:90px}input[type=range]{padding:0;width:170px}
+button{cursor:pointer}button.p{background:var(--acc);color:#fff;border-color:var(--acc)}
+button:hover{filter:brightness(1.08)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.one{display:grid;gap:12px;grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+@media(max-width:800px){.one{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;min-width:0}
+.card h3{margin:0 0 8px;font-size:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.card small{color:var(--mut);font-weight:400}
+.rk{margin-left:auto;background:var(--ok);color:#fff;border-radius:99px;padding:1px 10px;font-size:13px}
+canvas{width:100%;height:220px;display:block}
+.st{font-size:13px;color:var(--mut);margin-top:6px}
+.ds{margin:0 0 8px;font-size:13.5px;line-height:1.5}.ds b{color:var(--acc)}
+.sp{padding:2px 8px;font-size:15px;line-height:1.2;border-radius:99px}.sp.on{background:var(--acc);border-color:var(--acc)}
+.code{font:13px/1.55 ui-monospace,Consolas,monospace;overflow-x:auto}
+.code div{white-space:pre;padding:0 8px;border-radius:4px}
+.code div.on{background:var(--hl);outline:1px solid var(--cmp)}
+.code i{display:inline-block;width:2em;margin-right:10px;text-align:right;color:var(--mut);font-style:normal;user-select:none}
+.code .k{color:var(--k);font-weight:600}.code .t{color:var(--ty)}.code .f{color:var(--fn)}.code .n{color:var(--nu)}.code .c{color:var(--cm);font-style:italic}.code .v{color:var(--va)}
+.code{border-radius:8px;padding:8px 0;border:1px solid var(--bd)}
+.code.cl{background:#fff;color:#1f2328;--k:#cf222e;--ty:#0a7ea4;--fn:#8250df;--nu:#0550ae;--cm:#6e7781;--va:#953800;--mut:#8c959f;--hl:#fff3c4}
+.code.cd{background:#0d1117;color:#e6edf3;--k:#ff7b72;--ty:#79c0ff;--fn:#d2a8ff;--nu:#79c0ff;--cm:#8b949e;--va:#ffa657;--mut:#6e7681;--hl:#3d3a1f}
+.lg{font-size:12px;color:var(--mut);margin:0 0 12px;display:flex;gap:14px;flex-wrap:wrap}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--bd)}
+.tw{overflow-x:auto}
+h2{font-size:17px;margin:18px 0 8px}
+</style>
+</head>
+<body>
+<h1><a href="index.html">Home</a></h1>
+<h1>Trực quan hóa thuật toán sắp xếp</h1>
+<div class="ctl">
+<label>Số lượng phần tử<input type="number" id="n" min="5" max="500" value="30"></label>
+<label>Thời gian giữa các bước: <b id="dv">100 ms</b><input type="range" id="d" min="0" max="1000" step="10" value="100"></label>
+<label>Dữ liệu<select id="t"><option value="rand">Ngẫu nhiên</option><option value="near">Gần như đã sắp xếp</option><option value="rev">Đảo ngược</option><option value="few">Ít giá trị khác nhau</option></select></label>
+<label>Thuật toán<select id="al"></select></label>
+<label>Ngôn ngữ lập trình<select id="lg"></select></label>
+<button id="gen">Dữ liệu mới</button>
+<button id="run" class="p">Sắp xếp</button>
+<button id="stp" title="Phím tắt: N">Chạy từng bước (N)</button>
+<button id="pau">Tạm dừng</button>
+<button id="rst">Đặt lại</button>
+</div>
+<div class="lg"><span><i style="background:var(--bar)"></i>Phần tử</span><span><i style="background:var(--cmp)"></i>Đang so sánh</span><span><i style="background:var(--swp)"></i>Đổi chỗ / gán</span><span><i style="background:var(--piv)"></i>Pivot</span><span><i style="background:var(--ok)"></i>Đã sắp xếp</span></div>
+<main id="view"></main>
+<h2>So sánh các thuật toán trên dữ liệu thực tế (không hoạt ảnh)</h2>
+<p class="st">Chạy tất cả thuật toán trên cùng dữ liệu hiện tại. Các dòng giữ nguyên thứ tự và các cột không đổi; thứ hạng nằm ở các cột riêng. Thời gian là trung vị của 5 lần đo (sau 1 lần khởi động). Số so sánh và số lần gán là cố định theo dữ liệu, phản ánh độ phức tạp tốt hơn thời gian ms.</p>
+<button id="bm" class="p">So sánh các thuật toán</button>
+<div class="tw"><table id="bt" hidden></table></div>
+
+<script>
+const sw=(a,i,j)=>{const t=a[i];a[i]=a[j];a[j]=t};
+function* bubble(s){const a=s.a,n=a.length;for(let i=0;i<n-1;i++){yield{l:3};for(let j=0;j<n-1-i;j++){s.c++;yield{l:5,h:[j,j+1]};if(a[j]>a[j+1]){sw(a,j,j+1);s.w++;yield{l:6,h:[j,j+1],x:1}}}s.f[n-1-i]=1}s.f[0]=1}
+function* sel(s){const a=s.a,n=a.length;for(let i=0;i<n-1;i++){let m=i;yield{l:4,h:[i]};for(let j=i+1;j<n;j++){s.c++;yield{l:6,h:[j,m]};if(a[j]<a[m]){m=j;yield{l:7,h:[m]}}}sw(a,i,m);if(i!=m)s.w++;yield{l:8,h:[i,m],x:1};s.f[i]=1}s.f[n-1]=1}
+function* ins(s){const a=s.a;s.pre=1;for(let i=1;i<a.length;i++){const k=a[i];yield{l:3,h:[i]};let j=i-1;while(j>=0){s.c++;yield{l:5,h:[j,j+1]};if(a[j]>k){a[j+1]=a[j];s.w++;yield{l:6,h:[j,j+1],x:1};j--}else break}a[j+1]=k;s.w++;yield{l:8,h:[j+1],x:1};s.pre=i+1}}
+function* mrg(s,l,r){if(r-l<1)return;const a=s.a,m=(l+r)>>1;yield{l:3};yield*mrg(s,l,m);yield*mrg(s,m+1,r);const L=a.slice(l,m+1),R=a.slice(m+1,r+1);for(let q=l;q<=r;q++)s.f[q]=0;yield{l:6,h:[l,r]};let i=0,j=0;for(let k=l;k<=r;k++){if(i<L.length&&j<R.length)s.c++;if(j>=R.length||(i<L.length&&L[i]<=R[j])){a[k]=L[i++];s.w++;yield{l:10,h:[k],x:1}}else{a[k]=R[j++];s.w++;yield{l:12,h:[k],x:1}}}for(let q=l;q<=r;q++)s.f[q]=1}
+function* qck(s,lo,hi){if(lo>=hi){if(lo===hi)s.f[lo]=1;return}const a=s.a,p=a[hi];yield{l:3,h:[hi],p:hi};let i=lo;for(let j=lo;j<hi;j++){s.c++;yield{l:6,h:[j,i],p:hi};if(a[j]<p){sw(a,i,j);if(i!=j)s.w++;yield{l:7,h:[i,j],p:hi,x:1};i++}}sw(a,i,hi);s.w++;yield{l:9,h:[i,hi],x:1};s.f[i]=1;yield*qck(s,lo,i-1);yield*qck(s,i+1,hi)}
+function* hfy(s,n,i){const a=s.a;let b=i,l=2*i+1,r=2*i+2;yield{l:2,h:[i]};if(l<n){s.c++;yield{l:3,h:[l,b]};if(a[l]>a[b])b=l}if(r<n){s.c++;yield{l:4,h:[r,b]};if(a[r]>a[b])b=r}if(b!=i){sw(a,i,b);s.w++;yield{l:6,h:[i,b],x:1};yield*hfy(s,n,b)}}
+function* hp(s){const n=s.a.length;for(let i=(n>>1)-1;i>=0;i--){yield{l:10};yield*hfy(s,n,i)}for(let e=n-1;e>0;e--){sw(s.a,0,e);s.w++;yield{l:12,h:[0,e],x:1};s.f[e]=1;yield*hfy(s,e,0)}s.f[0]=1}
+
+const A={
+bubble:{n:'Bubble Sort',o:'O(n²)',g:s=>bubble(s),c:`def bubble_sort(a):
+    n = len(a)
+    for i in range(n - 1):
+        for j in range(n - 1 - i):
+            if a[j] > a[j + 1]:
+                a[j], a[j + 1] = a[j + 1], a[j]`},
+sel:{n:'Selection Sort',o:'O(n²)',g:s=>sel(s),c:`def selection_sort(a):
+    n = len(a)
+    for i in range(n - 1):
+        m = i
+        for j in range(i + 1, n):
+            if a[j] < a[m]:
+                m = j
+        a[i], a[m] = a[m], a[i]`},
+ins:{n:'Insertion Sort',o:'O(n²)',g:s=>ins(s),c:`def insertion_sort(a):
+    for i in range(1, len(a)):
+        key = a[i]
+        j = i - 1
+        while j >= 0 and a[j] > key:
+            a[j + 1] = a[j]
+            j -= 1
+        a[j + 1] = key`},
+mrg:{n:'Merge Sort',o:'O(n log n)',g:s=>mrg(s,0,s.a.length-1),c:`def merge_sort(a, l, r):
+    if r - l < 1: return
+    m = (l + r) // 2
+    merge_sort(a, l, m)
+    merge_sort(a, m + 1, r)
+    L, R = a[l:m+1], a[m+1:r+1]
+    i = j = 0
+    for k in range(l, r + 1):
+        if j >= len(R) or (i < len(L) and L[i] <= R[j]):
+            a[k] = L[i]; i += 1
+        else:
+            a[k] = R[j]; j += 1`},
+qck:{n:'Quick Sort',o:'O(n log n)',g:s=>qck(s,0,s.a.length-1),c:`def quick_sort(a, lo, hi):
+    if lo >= hi: return
+    pivot = a[hi]
+    i = lo
+    for j in range(lo, hi):
+        if a[j] < pivot:
+            a[i], a[j] = a[j], a[i]
+            i += 1
+    a[i], a[hi] = a[hi], a[i]
+    quick_sort(a, lo, i - 1)
+    quick_sort(a, i + 1, hi)`},
+hp:{n:'Heap Sort',o:'O(n log n)',g:s=>hp(s),c:`def heapify(a, n, i):
+    big = i; l = 2*i+1; r = 2*i+2
+    if l < n and a[l] > a[big]: big = l
+    if r < n and a[r] > a[big]: big = r
+    if big != i:
+        a[i], a[big] = a[big], a[i]
+        heapify(a, n, big)
+def heap_sort(a):
+    n = len(a)
+    for i in range(n//2 - 1, -1, -1): heapify(a, n, i)
+    for e in range(n - 1, 0, -1):
+        a[0], a[e] = a[e], a[0]
+        heapify(a, e, 0)`}};
+
+const $=id=>document.getElementById(id);
+const al=$('al');al.innerHTML=Object.keys(A).map(k=>`<option value="${k}">${A[k].n}</option>`).join('')+'<option value="all">So sánh tất cả</option>';
+const D={
+bubble:'<b>Ý tưởng:</b> so sánh hai phần tử kề nhau và đổi chỗ nếu sai thứ tự; sau mỗi lượt, phần tử lớn nhất “nổi” về cuối. <b>Đặc điểm:</b> đơn giản, dễ hiểu nhưng chậm, bản này luôn O(n²); ổn định, không cần thêm bộ nhớ.',
+sel:'<b>Ý tưởng:</b> mỗi lượt tìm phần tử nhỏ nhất trong phần chưa sắp xếp rồi đưa về đầu. <b>Đặc điểm:</b> ít lần đổi chỗ (tối đa n − 1) nhưng luôn O(n²) phép so sánh dù dữ liệu thế nào; không ổn định.',
+ins:'<b>Ý tưởng:</b> giống xếp bài trên tay: lấy từng phần tử rồi chèn vào đúng chỗ trong phần đã sắp xếp. <b>Đặc điểm:</b> rất nhanh với dữ liệu gần như đã sắp xếp (O(n)), xấu nhất O(n²); ổn định.',
+mrg:'<b>Ý tưởng:</b> chia đôi danh sách, sắp xếp từng nửa rồi trộn hai nửa đã sắp xếp lại. <b>Đặc điểm:</b> luôn O(n log n) và ổn định, nhưng cần thêm bộ nhớ O(n).',
+qck:'<b>Ý tưởng:</b> chọn một pivot, đưa phần tử nhỏ hơn sang trái, lớn hơn sang phải, rồi sắp xếp từng bên. <b>Đặc điểm:</b> thường rất nhanh (trung bình O(n log n)), nhưng với pivot cuối và dữ liệu đã sắp xếp hoặc đảo ngược thì rơi xuống O(n²); không ổn định.',
+hp:'<b>Ý tưởng:</b> xếp dữ liệu thành heap (cây nhị phân), lần lượt đưa phần tử lớn nhất về cuối rồi vun lại heap. <b>Đặc điểm:</b> luôn O(n log n), sắp xếp tại chỗ không cần thêm bộ nhớ; không ổn định.'};
+let data=[],R=[],timer=null,rank=0;
+
+/* Mã nguồn dạng C-like dùng chung; §N = số dòng logic đang thực thi (khớp với bản Python) */
+const B={
+bubble:`@Fbubble_sort(@A) {
+    @Tn = @N(a);§2
+    for (@Ti = 0; i < n - 1; i++) {§3
+        for (@Tj = 0; j < n - 1 - i; j++) {§4
+            if (a[j] > a[j + 1]) {§5
+                @S(j, j + 1);§6
+            }
+        }
+    }
+}`,
+sel:`@Fselection_sort(@A) {
+    @Tn = @N(a);§2
+    for (@Ti = 0; i < n - 1; i++) {§3
+        @Tm = i;§4
+        for (@Tj = i + 1; j < n; j++) {§5
+            if (a[j] < a[m]) {§6
+                m = j;§7
+            }
+        }
+        @S(i, m);§8
+    }
+}`,
+ins:`@Finsertion_sort(@A) {
+    for (@Ti = 1; i < @N(a); i++) {§2
+        @Tkey = a[i];§3
+        @Tj = i - 1;§4
+        while (j >= 0 && a[j] > key) {§5
+            a[j + 1] = a[j];§6
+            j--;§7
+        }
+        a[j + 1] = key;§8
+    }
+}`,
+mrg:`@Fmerge_sort(@A, @Il, @Ir) {
+    if (r - l < 1) return;§2
+    @Tm = (l + r) / 2;§3
+    merge_sort(a, l, m);§4
+    merge_sort(a, m + 1, r);§5
+    @VL = @C(a, l, m);§6
+    @VR = @C(a, m + 1, r);§6
+    @Ti = 0, j = 0;§7
+    for (@Tk = l; k <= r; k++) {§8
+        if (j >= @N(R) || (i < @N(L) && L[i] <= R[j])) {§9
+            a[k] = L[i++];§10
+        } else {
+            a[k] = R[j++];§12
+        }
+    }
+}`,
+qck:`@Fquick_sort(@A, @Ilo, @Ihi) {
+    if (lo >= hi) return;§2
+    @Tpivot = a[hi];§3
+    @Ti = lo;§4
+    for (@Tj = lo; j < hi; j++) {§5
+        if (a[j] < pivot) {§6
+            @S(i, j);§7
+            i++;§8
+        }
+    }
+    @S(i, hi);§9
+    quick_sort(a, lo, i - 1);§10
+    quick_sort(a, i + 1, hi);§11
+}`,
+hp:`@Fheapify(@A, @In, @Ii) {
+    @Tbig = i, l = 2 * i + 1, r = 2 * i + 2;§2
+    if (l < n && a[l] > a[big]) big = l;§3
+    if (r < n && a[r] > a[big]) big = r;§4
+    if (big != i) {§5
+        @S(i, big);§6
+        heapify(a, n, big);§7
+    }
+}
+@Fheap_sort(@A) {
+    @Tn = @N(a);§9
+    for (@Ti = n / 2 - 1; i >= 0; i--) heapify(a, n, i);§10
+    for (@Te = n - 1; e > 0; e--) {§11
+        @S(0, e);§12
+        heapify(a, e, 0);§13
+    }
+}`};
+const LG={py:{n:'Python'},
+js:{n:'JavaScript',T:'let ',I:'',F:'function ',A:'a',V:'let ',len:'.length',S:(i,j)=>`[a[${i}], a[${j}]] = [a[${j}], a[${i}]]`,C:(x,y)=>`a.slice(${x}, ${y} + 1)`},
+java:{n:'Java',T:'int ',I:'int ',F:'static void ',A:'int[] a',V:'int[] ',len:'.length',S:(i,j)=>`swap(a, ${i}, ${j})`,C:(x,y)=>`Arrays.copyOfRange(a, ${x}, ${y} + 1)`},
+cpp:{n:'C++',T:'int ',I:'int ',F:'void ',A:'vector<int>& a',V:'vector<int> ',len:'.size()',S:(i,j)=>`swap(a[${i}], a[${j}])`,C:(x,y)=>`vector<int>(a.begin() + ${x}, a.begin() + ${y} + 1)`},
+cs:{n:'C#',T:'int ',I:'int ',F:'static void ',A:'int[] a',V:'int[] ',len:'.Length',S:(i,j)=>`(a[${i}], a[${j}]) = (a[${j}], a[${i}])`,C:(x,y)=>`a[${x}..(${y} + 1)]`}};
+function conv(s,l){const g=LG[l];return s.replace(/@S\(([^,]+), ([^)]+)\)/g,(_,i,j)=>g.S(i,j)).replace(/@C\(\w+, ([^,]+), ([^)]+)\)/g,(_,x,y)=>g.C(x,y)).replace(/@N\((\w+)\)/g,(_,x)=>x+g.len).replace(/@T/g,g.T).replace(/@I/g,g.I).replace(/@F/g,g.F).replace(/@A/g,g.A).replace(/@V/g,g.V)}
+const KW={py:'def for in if else while return and or not',js:'function let for if else while return',java:'static for if else while return',cpp:'for if else while return',cs:'static for if else while return'};
+const TY=new Set('void int vector Arrays'.split(' '));
+let spk=null,codeTheme=matchMedia('(prefers-color-scheme: dark)').matches?'cd':'cl';
+function speak(r,b){
+  const ss=window.speechSynthesis;
+  if(!ss){alert('Trình duyệt này không hỗ trợ đọc văn bản.');return}
+  const same=spk===b;
+  ss.cancel();if(spk)spk.classList.remove('on');spk=null;
+  if(same)return;
+  const tmp=document.createElement('div');tmp.innerHTML=D[r.k];
+  const txt=A[r.k].n+'. '+tmp.textContent.replace(/O\(n²\)/g,'O của n bình phương').replace(/O\(n log n\)/g,'O của n log n').replace(/O\(n\)/g,'O của n').replace(/n − 1/g,'n trừ 1');
+  const u=new SpeechSynthesisUtterance(txt);u.lang='vi-VN';
+  const v=ss.getVoices().find(x=>x.lang.toLowerCase().startsWith('vi'));if(v)u.voice=v;
+  u.onend=u.onerror=()=>{b.classList.remove('on');if(spk===b)spk=null};
+  b.classList.add('on');spk=b;ss.speak(u);
+}
+function hl(t,l){
+  const kw=new Set(KW[l].split(' ')),re=l==='py'?/(#.*)|\b(\d+)\b|\b([A-Za-z_]\w*)\b/g:/(\/\/.*)|\b(\d+)\b|\b([A-Za-z_]\w*)\b/g;
+  const e=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  let o='',p=0,m;
+  while((m=re.exec(t))){o+=e(t.slice(p,m.index));p=re.lastIndex;const w=m[0];
+    const c=m[1]?'c':m[2]?'n':kw.has(w)?'k':TY.has(w)?'t':/^\s*\(/.test(t.slice(p))?'f':'v';
+    o+='<span class="'+c+'">'+e(w)+'</span>'}
+  return o+e(t.slice(p));
+}
+function showCode(){
+  const r=R[0],lang=$('lg').value;
+  const ls=lang==='py'?A[r.k].c.split('\n').map((t,i)=>({t,n:i+1})):conv(B[r.k],lang).split('\n').map(t=>{const m=t.match(/§(\d+)\s*$/);return{t:t.replace(/\s*§\d+\s*$/,''),n:m?+m[1]:0}});
+  r.code=ls.map(l=>l.n);
+  $('code').innerHTML=ls.map((l,i)=>`<div><i>${i+1}</i>${hl(l.t,lang)}</div>`).join('');
+  $('ct').textContent='Code '+LG[lang].n+' đang chạy';
+  const paint=()=>{$('code').className='code '+codeTheme;$('cth').textContent=codeTheme==='cd'?'☀️ Sáng':'🌙 Tối';$('cth').title=codeTheme==='cd'?'Chuyển sang nền sáng':'Chuyển sang nền tối'};
+  paint();$('cth').onclick=()=>{codeTheme=codeTheme==='cd'?'cl':'cd';paint()};
+}
+$('lg').innerHTML=['py','js','java','cs','cpp'].map(k=>`<option value="${k}">${LG[k].n}</option>`).join('');
+$('lg').onchange=()=>{if(R.length===1){showCode();draw()}};
+
+function makeData(){
+  const n=Math.max(5,Math.min(500,+$('n').value||30)),t=$('t').value;let a=[];
+  for(let i=0;i<n;i++)a.push(i+1);
+  if(t==='rand'||t==='few'){for(let i=n-1;i>0;i--){sw(a,i,Math.floor(Math.random()*(i+1)))}}
+  if(t==='few')a=a.map(v=>Math.ceil(v/(n/5)));
+  if(t==='rev')a.reverse();
+  if(t==='near'){for(let k=0;k<Math.max(1,n/10);k++)sw(a,Math.floor(Math.random()*n),Math.floor(Math.random()*n))}
+  data=a;$('bt').innerHTML='';$('bt').hidden=true;$('bm').textContent='So sánh các thuật toán';shown=false;
+}
+function mk(k){const s={a:data.slice(),c:0,w:0,steps:0,f:new Uint8Array(data.length)};return{k,s,g:A[k].g(s),done:false,h:[],x:0,p:-1,line:0,rank:0}}
+function step(r){if(r.done)return;const v=r.g.next();if(v.done){r.done=true;r.h=[];r.p=-1;r.line=0;r.rank=++rank;return}r.s.steps++;const e=v.value;r.h=e.h||[];r.x=e.x||0;r.p=e.p??-1;r.line=e.l}
+function build(){
+  stop();rank=0;if(window.speechSynthesis)speechSynthesis.cancel();const k=al.value,keys=k==='all'?Object.keys(A):[k];
+  R=keys.map(mk);const v=$('view');v.innerHTML='';
+  const cards=R.map(r=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<h3>${A[r.k].n}<button class="sp" title="Nghe mô tả thuật toán" aria-label="Nghe mô tả thuật toán">🔊</button><small>${A[r.k].o}</small><span class="rk" hidden></span></h3><p class="ds">${D[r.k]}</p><canvas></canvas><div class="st"></div>`;r.el=d;r.cv=d.querySelector('canvas');d.querySelector('.sp').onclick=e=>speak(r,e.currentTarget);r.st=d.querySelector('.st');r.rk=d.querySelector('.rk');return d});
+  if(k==='all'){v.className='grid';cards.forEach(c=>v.appendChild(c))}
+  else{v.className='one';v.appendChild(cards[0]);const c=document.createElement('div');c.className='card';c.innerHTML='<h3><span id="ct"></span><button id="cth" class="sp" style="font-size:17px" aria-label="Đổi nền code sáng/tối">🌙 Tối</button></h3><div class="code" id="code"></div>';v.appendChild(c);
+    showCode()}
+  draw();
+}
+function draw(){
+  R.forEach(r=>{
+    const cv=r.cv,dpr=devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
+    if(cv.width!==W*dpr){cv.width=W*dpr;cv.height=H*dpr}
+    const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
+    const cs=getComputedStyle(document.documentElement),a=r.s.a,n=a.length,mx=Math.max(...a),bw=W/n,gap=bw>6?1:0;
+    const col=n=>cs.getPropertyValue(n).trim();
+    a.forEach((v,i)=>{g.fillStyle=r.done?col('--ok'):i===r.p?col('--piv'):r.h.includes(i)?(r.x?col('--swp'):col('--cmp')):(r.s.f[i]||i<(r.s.pre||0))?col('--ok'):col('--bar');
+      const h=v/mx*(H-(n<21?20:4));g.fillRect(i*bw,H-h,bw-gap,h);if(n<21){g.fillStyle=col('--tx');g.font='600 '+Math.max(9,Math.min(13,bw*.7))+'px system-ui,sans-serif';g.textAlign='center';g.fillText(v,i*bw+(bw-gap)/2,H-h-4)}});
+    r.st.textContent=`So sánh: ${r.s.c} | Gán/đổi chỗ: ${r.s.w} | Bước: ${r.s.steps}`+(r.done?' | Xong':'');
+    r.rk.hidden=!(r.done&&R.length>1);r.rk.textContent='Hạng '+r.rank;
+    if(r.code){[...$('code').children].forEach((d,i)=>d.classList.toggle('on',r.code[i]===r.line))}
+  });
+}
+function tick(all){R.forEach(r=>{const d=+$('d').value,m=d<5&&all?Math.max(1,Math.ceil(r.s.a.length/10)):1;for(let i=0;i<m;i++)step(r)});draw()}
+function loop(){tick(true);if(R.every(r=>r.done)){stop();return}timer=setTimeout(loop,+$('d').value)}
+function stop(){clearTimeout(timer);timer=null}
+$('run').onclick=()=>{if(!timer&&!R.every(r=>r.done))loop()};
+$('stp').onclick=()=>{stop();tick(false)};
+addEventListener('keydown',e=>{if(e.key.toLowerCase()!=='n'||e.ctrlKey||e.metaKey||e.altKey)return;const t=e.target.tagName;if(t==='INPUT'||t==='SELECT'||t==='TEXTAREA')return;e.preventDefault();$('stp').click()});
+$('pau').onclick=stop;
+$('rst').onclick=build;
+$('gen').onclick=()=>{makeData();build()};
+['n','t'].forEach(i=>$(i).onchange=()=>{makeData();build()});
+al.onchange=build;
+$('d').oninput=()=>$('dv').textContent=$('d').value+' ms';
+let shown=false;
+$('bm').onclick=()=>{if(shown){shown=false;$('bt').hidden=true;$('bm').textContent='So sánh các thuật toán';return}shown=true;$('bt').hidden=false;$('bm').textContent='Ẩn bảng so sánh';
+  const keys=Object.keys(A),runs=5;
+  const once=k=>{const s={a:data.slice(),c:0,w:0,steps:0,f:new Uint8Array(data.length)},g=A[k].g(s),t=performance.now();while(!g.next().done);return{c:s.c,w:s.w,ms:performance.now()-t}};
+  keys.forEach(once);
+  const rows=keys.map(k=>{const ts=[];let o;for(let i=0;i<runs;i++){o=once(k);ts.push(o.ms)}ts.sort((x,y)=>x-y);return{k,c:o.c,w:o.w,ms:ts[runs>>1]}});
+  const rk=f=>rows.map(r=>1+rows.filter(q=>f(q)<f(r)).length),rt=rk(r=>r.ms),ro=rk(r=>r.c+r.w),b=v=>v===1?'<b>1</b>':v;
+  $('bt').innerHTML=`<tr><th>Thuật toán</th><th>Độ phức tạp</th><th>So sánh</th><th>Gán/đổi chỗ</th><th>Tổng thao tác</th><th>Hạng (thao tác)</th><th>Thời gian (ms)</th><th>Hạng (thời gian)</th></tr>`+rows.map((r,i)=>`<tr><td>${A[r.k].n}</td><td>${A[r.k].o}</td><td>${r.c}</td><td>${r.w}</td><td>${r.c+r.w}</td><td>${b(ro[i])}</td><td>${r.ms.toFixed(3)}</td><td>${b(rt[i])}</td></tr>`).join('');
+};
+addEventListener('resize',draw);
+makeData();build();
+</script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trực quan hóa thuật toán tìm kiếm</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--tx:#1d2433;--mu:#667085;--bd:#dde1ea;--pr:#3b6cf6;--cur:#f5b301;--ok:#22a06b;--no:#e5484d;--vis:#c9d3f5;--dim:#eef0f4;--code:#10172a;--codetx:#e6ebff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1420;--card:#171e2e;--tx:#e8ecf5;--mu:#99a3b8;--bd:#2a3448;--vis:#34437a;--dim:#1f2738;--code:#0a0f1c}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0 2px}p.s{color:var(--mu);margin:0 0 14px}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+label{display:flex;flex-direction:column;font-size:12px;color:var(--mu);gap:3px}
+select,input[type=number]{padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:14px;min-width:90px}
+button{padding:9px 14px;border:0;border-radius:8px;background:var(--pr);color:#fff;font-size:14px;cursor:pointer}
+button.g{background:var(--dim);color:var(--tx);border:1px solid var(--bd)}button:disabled{opacity:.5;cursor:default}
+#arr{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;padding:6px 0}
+.b{min-width:34px;padding:8px 4px;text-align:center;border-radius:8px;border:2px solid var(--bd);background:var(--card);font-weight:600;font-size:13px;position:relative;transition:background .15s}
+.b small{position:absolute;top:-1px;left:3px;font-size:9px;color:var(--mu);font-weight:400}
+.b.vis{background:var(--vis)}.b.dim{background:#fde2e3;color:#b4232a;border-color:#f3b4b8}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .b.dim{background:#4a1f25;color:#ff9aa0;border-color:#7a2f38}}
+.b.cur{background:var(--cur);border-color:var(--cur);color:#000}.b.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.b.lo{border-bottom-color:var(--pr)}.b.hi{border-top-color:var(--pr)}
+#msg{min-height:44px;padding:8px 12px;border-radius:8px;background:var(--dim);margin-top:8px}
+.st{display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;font-size:14px}.st b{font-size:18px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.g2{grid-template-columns:1fr}}
+pre{margin:0;background:var(--code);color:var(--codetx);padding:12px;border-radius:8px;overflow-x:auto;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace}
+#code{counter-reset:l}.cl{display:block;white-space:pre;min-height:1.5em}.cl::before{counter-increment:l;content:counter(l);display:inline-block;width:2em;margin-right:14px;text-align:right;color:#6b7694;user-select:none;border-right:1px solid #2a3448;padding-right:8px}
+.tk{color:#ff79c6;font-weight:600}.tt{color:#8be9fd}.tf{color:#50fa7b}.tv{color:#ffd580}.tn{color:#bd93f9}.ts{color:#f1fa8c}.tc{color:#6b7694;font-style:italic}
+pre.lt{background:#fafbff;color:#1d2433;border:1px solid var(--bd)}pre.lt .tk{color:#c2185b}pre.lt .tt{color:#00838f}pre.lt .tf{color:#1b7f3b}pre.lt .tv{color:#b45309}pre.lt .tn{color:#7c3aed}pre.lt .ts{color:#a16207}pre.lt .tc{color:#7a8599}pre.lt .cl::before{color:#8892a6;border-right-color:#dde1ea}
+.cl.on{background:rgba(245,179,1,.3);box-shadow:inset 3px 0 0 #f5b301}
+kbd{background:rgba(255,255,255,.25);border-radius:4px;padding:0 5px;font-size:12px;margin-left:4px}
+.leg span{display:inline-block;margin-right:12px;font-size:12px;color:var(--mu)}.leg i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
+.bar{height:10px;background:var(--pr);border-radius:5px;min-width:2px}
+</style></head><body><h1><a href="index.html">Home</a></h1>
+    <div class="w">
+<h1>Trực quan hóa thuật toán tìm kiếm</h1>
+<p class="s">Mảng được sắp xếp tăng dần. Chọn thuật toán, ngôn ngữ, số lượng phần tử rồi bấm Search hoặc chạy từng bước.</p>
+
+<div class="c"><div class="row">
+<label>Thuật toán<select id="al"></select></label>
+<label>Ngôn ngữ<select id="lg"><option>Python</option><option>JavaScript</option><option>Java</option><option>C#</option><option>C++</option></select></label>
+<label>Số lượng (5–60)<input type="number" id="n" min="5" max="60" value="20"></label>
+<label>Giá trị cần tìm<input type="number" id="t"></label>
+<label>Tốc độ: <span id="sv">5</span><input type="range" id="sp" min="1" max="10" value="5"></label>
+</div>
+<div class="row" style="margin-top:10px">
+<button id="bs">Search</button><button id="bst" class="g">Chạy từng bước (N)</button><button id="bp" class="g">Tạm dừng</button>
+<button id="br" class="g">Đặt lại</button><button id="bn" class="g">Tạo mảng mới</button><button id="bt" class="g">Giá trị ngẫu nhiên</button>
+</div></div>
+
+<div class="c"><div id="arr"></div>
+<div class="leg"><span><i style="background:var(--cur)"></i>Đang so sánh</span><span><i style="background:var(--vis)"></i>Đã duyệt</span><span><i style="background:#fde2e3;border:1px solid #f3b4b8"></i>Đã loại (nền đỏ)</span><span><i style="background:var(--ok)"></i>Tìm thấy</span><span>Viền xanh dưới/trên: biên thấp/cao</span></div>
+<div id="msg">Sẵn sàng.</div>
+<div class="st"><div>So sánh: <b id="cc">0</b></div><div>Độ phức tạp: <b id="cx"></b></div></div></div>
+
+<div class="c"><b id="ti"></b><button id="spk" class="g" title="Đọc giải thích thuật toán" style="padding:2px 8px;margin-left:8px">🔊</button><button id="thm" class="g" title="Đổi màu nền code" style="padding:2px 8px;margin-left:6px">☀️ Sáng</button><p id="ds" class="s" style="margin:4px 0 10px"></p><pre id="code"></pre></div>
+<div class="c"><button id="bc">So sánh các thuật toán</button>
+<div id="cmpbox" hidden style="margin-top:10px"><p class="s" style="margin:0 0 10px">Chạy cùng mảng hiện tại. Cột trung bình: mọi phần tử trong mảng lần lượt được tìm.</p>
+<div class="tw"><table id="cmp"></table></div></div></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const A={
+lin:{n:"Tìm tuần tự (Linear)",cx:"O(n)",d:"Duyệt từng phần tử từ đầu đến cuối. Không cần mảng sắp xếp, đơn giản nhưng chậm với dữ liệu lớn.",
+*g(a,t){for(let i=0;i<a.length;i++){yield{i,lo:i,hi:a.length-1,m:`So sánh a[${i}]=${a[i]} với ${t}`};if(a[i]==t)return i}return -1},
+c:{Python:`def linear(a, t):
+    for i in range(len(a)):
+        if a[i] == t:
+            return i
+    return -1`,JavaScript:`function linear(a, t) {
+  for (let i = 0; i < a.length; i++)
+    if (a[i] === t) return i;
+  return -1;
+}`,"C++":`int linear(vector<int>& a, int t) {
+    for (int i = 0; i < a.size(); i++)
+        if (a[i] == t) return i;
+    return -1;
+}`,Java:`static int linear(int[] a, int t) {
+    for (int i = 0; i < a.length; i++)
+        if (a[i] == t) return i;
+    return -1;
+}`}},
+bin:{n:"Tìm nhị phân (Binary)",cx:"O(log n)",d:"Chia đôi đoạn tìm kiếm: so sánh với phần tử giữa rồi loại bỏ một nửa. Yêu cầu mảng đã sắp xếp.",
+*g(a,t){let lo=0,hi=a.length-1;while(lo<=hi){const i=(lo+hi)>>1;yield{i,lo,hi,m:`mid=${i}, a[mid]=${a[i]} ${a[i]==t?"=":a[i]<t?"<":">"} ${t}`};if(a[i]==t)return i;if(a[i]<t)lo=i+1;else hi=i-1}return -1},
+c:{Python:`def binary(a, t):
+    lo, hi = 0, len(a) - 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if a[mid] == t: return mid
+        if a[mid] < t: lo = mid + 1
+        else: hi = mid - 1
+    return -1`,JavaScript:`function binary(a, t) {
+  let lo = 0, hi = a.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (a[mid] === t) return mid;
+    if (a[mid] < t) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}`,"C++":`int binary(vector<int>& a, int t) {
+    int lo = 0, hi = a.size() - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (a[mid] == t) return mid;
+        if (a[mid] < t) lo = mid + 1;
+        else hi = mid - 1;
+    }
+    return -1;
+}`,Java:`static int binary(int[] a, int t) {
+    int lo = 0, hi = a.length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (a[mid] == t) return mid;
+        if (a[mid] < t) lo = mid + 1;
+        else hi = mid - 1;
+    }
+    return -1;
+}`}},
+jmp:{n:"Tìm nhảy (Jump)",cx:"O(√n)",d:"Nhảy từng bước √n để tìm khối chứa giá trị, sau đó tìm tuần tự trong khối. Yêu cầu mảng đã sắp xếp.",
+*g(a,t){const n=a.length,m=Math.floor(Math.sqrt(n));let p=0,s=m;while(p<n){const j=Math.min(s,n)-1;yield{i:j,lo:p,hi:n-1,m:`Nhảy tới a[${j}]=${a[j]} ${a[j]<t?"<":">="} ${t}`};if(a[j]>=t)break;p=s;s+=m}
+for(let i=p;i<Math.min(s,n);i++){yield{i,lo:p,hi:Math.min(s,n)-1,m:`Tìm tuần tự trong khối: a[${i}]=${a[i]}`};if(a[i]==t)return i;if(a[i]>t)break}return -1},
+c:{Python:`import math
+def jump(a, t):
+    n = len(a); m = int(math.sqrt(n))
+    prev = 0
+    while prev < n and a[min(prev + m, n) - 1] < t:
+        prev += m
+    for i in range(prev, min(prev + m, n)):
+        if a[i] == t: return i
+    return -1`,JavaScript:`function jump(a, t) {
+  const n = a.length, m = Math.floor(Math.sqrt(n));
+  let prev = 0;
+  while (prev < n && a[Math.min(prev + m, n) - 1] < t) prev += m;
+  for (let i = prev; i < Math.min(prev + m, n); i++)
+    if (a[i] === t) return i;
+  return -1;
+}`,"C++":`int jump(vector<int>& a, int t) {
+    int n = a.size(), m = sqrt(n), prev = 0;
+    while (prev < n && a[min(prev + m, n) - 1] < t) prev += m;
+    for (int i = prev; i < min(prev + m, n); i++)
+        if (a[i] == t) return i;
+    return -1;
+}`,Java:`static int jump(int[] a, int t) {
+    int n = a.length, m = (int) Math.sqrt(n), prev = 0;
+    while (prev < n && a[Math.min(prev + m, n) - 1] < t) prev += m;
+    for (int i = prev; i < Math.min(prev + m, n); i++)
+        if (a[i] == t) return i;
+    return -1;
+}`}},
+int:{n:"Tìm nội suy (Interpolation)",cx:"O(log log n) trung bình",d:"Ước lượng vị trí theo giá trị cần tìm. Rất nhanh với dữ liệu phân bố đều, chậm (O(n)) khi phân bố lệch.",
+*g(a,t){let lo=0,hi=a.length-1;while(lo<=hi&&t>=a[lo]&&t<=a[hi]){const i=a[hi]==a[lo]?lo:lo+Math.floor((t-a[lo])*(hi-lo)/(a[hi]-a[lo]));yield{i,lo,hi,m:`pos=${i}, a[pos]=${a[i]} ${a[i]==t?"=":a[i]<t?"<":">"} ${t}`};if(a[i]==t)return i;if(a[i]<t)lo=i+1;else hi=i-1}return -1},
+c:{Python:`def interpolation(a, t):
+    lo, hi = 0, len(a) - 1
+    while lo <= hi and a[lo] <= t <= a[hi]:
+        if a[hi] == a[lo]:
+            return lo if a[lo] == t else -1
+        pos = lo + (t - a[lo]) * (hi - lo) // (a[hi] - a[lo])
+        if a[pos] == t: return pos
+        if a[pos] < t: lo = pos + 1
+        else: hi = pos - 1
+    return -1`,JavaScript:`function interpolation(a, t) {
+  let lo = 0, hi = a.length - 1;
+  while (lo <= hi && t >= a[lo] && t <= a[hi]) {
+    if (a[hi] === a[lo]) return a[lo] === t ? lo : -1;
+    const pos = lo + Math.floor((t - a[lo]) * (hi - lo) / (a[hi] - a[lo]));
+    if (a[pos] === t) return pos;
+    if (a[pos] < t) lo = pos + 1; else hi = pos - 1;
+  }
+  return -1;
+}`,"C++":`int interpolation(vector<int>& a, int t) {
+    int lo = 0, hi = a.size() - 1;
+    while (lo <= hi && t >= a[lo] && t <= a[hi]) {
+        if (a[hi] == a[lo]) return a[lo] == t ? lo : -1;
+        int pos = lo + (long long)(t - a[lo]) * (hi - lo) / (a[hi] - a[lo]);
+        if (a[pos] == t) return pos;
+        if (a[pos] < t) lo = pos + 1; else hi = pos - 1;
+    }
+    return -1;
+}`,Java:`static int interpolation(int[] a, int t) {
+    int lo = 0, hi = a.length - 1;
+    while (lo <= hi && t >= a[lo] && t <= a[hi]) {
+        if (a[hi] == a[lo]) return a[lo] == t ? lo : -1;
+        int pos = lo + (int)((long)(t - a[lo]) * (hi - lo) / (a[hi] - a[lo]));
+        if (a[pos] == t) return pos;
+        if (a[pos] < t) lo = pos + 1; else hi = pos - 1;
+    }
+    return -1;
+}`}}};
+A.lin.c["C#"]=`static int Linear(int[] a, int t) {
+    for (int i = 0; i < a.Length; i++)
+        if (a[i] == t) return i;
+    return -1;
+}`;
+A.bin.c["C#"]=`static int Binary(int[] a, int t) {
+    int lo = 0, hi = a.Length - 1;
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (a[mid] == t) return mid;
+        if (a[mid] < t) lo = mid + 1;
+        else hi = mid - 1;
+    }
+    return -1;
+}`;
+A.jmp.c["C#"]=`static int Jump(int[] a, int t) {
+    int n = a.Length, m = (int)Math.Sqrt(n), prev = 0;
+    while (prev < n && a[Math.Min(prev + m, n) - 1] < t) prev += m;
+    for (int i = prev; i < Math.Min(prev + m, n); i++)
+        if (a[i] == t) return i;
+    return -1;
+}`;
+A.int.c["C#"]=`static int Interpolation(int[] a, int t) {
+    int lo = 0, hi = a.Length - 1;
+    while (lo <= hi && t >= a[lo] && t <= a[hi]) {
+        if (a[hi] == a[lo]) return a[lo] == t ? lo : -1;
+        int pos = lo + (int)((long)(t - a[lo]) * (hi - lo) / (a[hi] - a[lo]));
+        if (a[pos] == t) return pos;
+        if (a[pos] < t) lo = pos + 1; else hi = pos - 1;
+    }
+    return -1;
+}`;
+const L={Java:["static int NAME(int[] a, int t)","a.length","Math.min"],"C#":["static int NAME(int[] a, int t)","a.Length","Math.Min"],"C++":["int NAME(vector<int>& a, int t)","a.size()","min"]};
+const mk=(tp,nm)=>{const o={};for(const l in L){const[h,len,mn]=L[l];o[l]=tp.replace("HEAD",h.replace("NAME",l=="C#"?nm[0].toUpperCase()+nm.slice(1):nm)).replace(/LEN/g,len).replace("MIN",mn)}return o};
+A.exp={n:"Tìm theo cấp số mũ (Exponential)",cx:"O(log n)",d:"Tăng gấp đôi chỉ số 1, 2, 4, 8... cho đến khi vượt quá giá trị cần tìm, sau đó tìm nhị phân trong khoảng vừa xác định. Hiệu quả khi giá trị nằm gần đầu mảng.",
+*g(a,t){const n=a.length;yield{i:0,lo:0,hi:n-1,m:`So sánh a[0]=${a[0]} với ${t}`};if(a[0]==t)return 0;let b=1;
+while(b<n){yield{i:b,lo:0,hi:n-1,m:`Mở rộng: a[${b}]=${a[b]} ${a[b]<t?"<":">="} ${t}`};if(a[b]>=t)break;b*=2}
+let lo=Math.floor(b/2),hi=Math.min(b,n-1);while(lo<=hi){const i=(lo+hi)>>1;yield{i,lo,hi,m:`Nhị phân: mid=${i}, a[mid]=${a[i]} ${a[i]==t?"=":a[i]<t?"<":">"} ${t}`};if(a[i]==t)return i;if(a[i]<t)lo=i+1;else hi=i-1}return -1},
+c:{Python:`def exponential(a, t):
+    if a[0] == t: return 0
+    b = 1
+    while b < len(a) and a[b] < t:
+        b *= 2
+    lo, hi = b // 2, min(b, len(a) - 1)
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        if a[mid] == t: return mid
+        if a[mid] < t: lo = mid + 1
+        else: hi = mid - 1
+    return -1`,
+JavaScript:`function exponential(a, t) {
+  const n = a.length;
+  if (a[0] === t) return 0;
+  let b = 1;
+  while (b < n && a[b] < t) b *= 2;
+  let lo = Math.floor(b / 2), hi = Math.min(b, n - 1);
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (a[mid] === t) return mid;
+    if (a[mid] < t) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return -1;
+}`,
+...mk(`HEAD {
+    int n = LEN;
+    if (a[0] == t) return 0;
+    int b = 1;
+    while (b < n && a[b] < t) b *= 2;
+    int lo = b / 2, hi = MIN(b, n - 1);
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2;
+        if (a[mid] == t) return mid;
+        if (a[mid] < t) lo = mid + 1;
+        else hi = mid - 1;
+    }
+    return -1;
+}`,"exponential")}};
+A.ter={n:"Tìm tam phân (Ternary)",cx:"O(log₃ n)",d:"Chia đoạn tìm kiếm thành ba phần bằng hai điểm chia m1 và m2, so sánh rồi giữ lại một trong ba phần. Số vòng lặp ít hơn nhị phân nhưng mỗi vòng tốn hai lần so sánh.",
+*g(a,t){let lo=0,hi=a.length-1;const o=x=>x==t?"=":x<t?"<":">";while(lo<=hi){const d=Math.floor((hi-lo)/3),m1=lo+d,m2=hi-d;
+yield{i:m1,lo,hi,m:`m1=${m1}, a[m1]=${a[m1]} ${o(a[m1])} ${t}`};if(a[m1]==t)return m1;
+if(m2!=m1){yield{i:m2,lo,hi,m:`m2=${m2}, a[m2]=${a[m2]} ${o(a[m2])} ${t}`};if(a[m2]==t)return m2}
+if(t<a[m1])hi=m1-1;else if(t>a[m2])lo=m2+1;else{lo=m1+1;hi=m2-1}}return -1},
+c:{Python:`def ternary(a, t):
+    lo, hi = 0, len(a) - 1
+    while lo <= hi:
+        m1 = lo + (hi - lo) // 3
+        m2 = hi - (hi - lo) // 3
+        if a[m1] == t: return m1
+        if a[m2] == t: return m2
+        if t < a[m1]: hi = m1 - 1
+        elif t > a[m2]: lo = m2 + 1
+        else: lo, hi = m1 + 1, m2 - 1
+    return -1`,
+JavaScript:`function ternary(a, t) {
+  let lo = 0, hi = a.length - 1;
+  while (lo <= hi) {
+    const m1 = lo + Math.floor((hi - lo) / 3);
+    const m2 = hi - Math.floor((hi - lo) / 3);
+    if (a[m1] === t) return m1;
+    if (a[m2] === t) return m2;
+    if (t < a[m1]) hi = m1 - 1;
+    else if (t > a[m2]) lo = m2 + 1;
+    else { lo = m1 + 1; hi = m2 - 1; }
+  }
+  return -1;
+}`,
+...mk(`HEAD {
+    int lo = 0, hi = LEN - 1;
+    while (lo <= hi) {
+        int m1 = lo + (hi - lo) / 3;
+        int m2 = hi - (hi - lo) / 3;
+        if (a[m1] == t) return m1;
+        if (a[m2] == t) return m2;
+        if (t < a[m1]) hi = m1 - 1;
+        else if (t > a[m2]) lo = m2 + 1;
+        else { lo = m1 + 1; hi = m2 - 1; }
+    }
+    return -1;
+}`,"ternary")}};
+let arr=[],gen=null,timer=null,cnt=0,vis=new Set(),res=null;
+const al=$("al");for(const k in A)al.add(new Option(A[k].n,k));
+function newArr(){let n=Math.max(5,Math.min(60,+$("n").value||20));$("n").value=n;const s=new Set();while(s.size<n)s.add(Math.floor(Math.random()*n*5)+1);arr=[...s].sort((x,y)=>x-y);rndT();reset()}
+function rndT(){$("t").value=Math.random()<.8?arr[Math.floor(Math.random()*arr.length)]:Math.floor(Math.random()*arr.length*5)+1}
+function draw(st){const w=$("arr");w.innerHTML="";arr.forEach((v,i)=>{const d=document.createElement("div");let c="b";
+if(st){if(st.lo!=null&&(i<st.lo||i>st.hi))c+=" dim";if(vis.has(i))c+=" vis";if(i==st.lo)c+=" lo";if(i==st.hi)c+=" hi";if(i==st.i)c+=" cur";if(st.found==i)c+=" ok"}
+d.className=c;d.innerHTML=`<small>${i}</small>${v}`;w.appendChild(d)})}
+function info(){const a=A[al.value];$("ti").textContent=a.n;$("ds").textContent=a.d;$("cx").textContent=a.cx;$("code").innerHTML=hl(a.c[$("lg").value],$("lg").value);if(gen&&curM)mark(curM)}
+function hl(src,lang){const KW=new Set("def return if else elif for while in let const function static new import from and or not True False None true false break continue".split(" ")),TY=new Set("int long boolean void double vector Math math self".split(" "));
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const re=new RegExp((lang=="Python"?"(#.*)":"(\\/\\/.*)")+"|(\"[^\"]*\"|'[^']*')|(\\b\\d+\\b)|([A-Za-z_]\\w*)|(\\s+|.)","g");
+return src.split("\n").map(line=>"<span class=\"cl\">"+line.replace(re,(m,c,s,n,id,o,off,str)=>{const e=esc(m);if(c)return `<span class="tc">${e}</span>`;if(s)return `<span class="ts">${e}</span>`;if(n)return `<span class="tn">${e}</span>`;
+if(id){if(KW.has(id))return `<span class="tk">${e}</span>`;if(TY.has(id))return `<span class="tt">${e}</span>`;if(str.charAt(off+m.length)=="(")return `<span class="tf">${e}</span>`;return `<span class="tv">${e}</span>`}return e})+"</span>").join("")}
+let curM=null;const E=v=>new RegExp("a\\["+v+"\\]\\s*={2,3}\\s*t");
+const HL={lin:[[/./,E("i")]],bin:[[/./,E("mid")]],jmp:[[/^Nhảy/,/a\[(?:Math\.)?[Mm]in\(prev/],[/./,E("i")]],int:[[/./,E("pos")]],exp:[[/^So sánh/,E("0")],[/^Mở/,/a\[b\]\s*<\s*t/],[/./,E("mid")]],ter:[[/^m1/,E("m1")],[/./,E("m2")]]};
+function mark(m){curM=m;const R=[...$("code").children];R.forEach(r=>r.classList.remove("on"));const h=HL[al.value];if(!m||!h)return;const u=h.find(x=>x[0].test(m));if(!u)return;const r=R.find(r=>u[1].test(r.textContent));if(r)r.classList.add("on")}
+function reset(){stop();curM=null;gen=null;cnt=0;vis=new Set();$("cc").textContent=0;$("msg").textContent="Sẵn sàng.";draw(null);info()}
+function stop(){clearInterval(timer);timer=null}
+function step(){const t=+$("t").value;if(!gen){gen=A[al.value].g(arr,t);cnt=0;vis=new Set()}
+const r=gen.next();if(r.done){stop();mark(null);const f=r.value;$("msg").textContent=f>=0?`Tìm thấy ${t} tại chỉ số ${f} sau ${cnt} lần so sánh.`:`Không tìm thấy ${t} sau ${cnt} lần so sánh.`;draw({found:f});gen=null;return false}
+const s=r.value;cnt++;$("cc").textContent=cnt;$("msg").textContent=s.m;draw(s);mark(s.m);vis.add(s.i);return true}
+function speed(){return 1100-$("sp").value*100}
+$("bs").onclick=()=>{stop();if(!gen)reset();timer=setInterval(step,speed())};
+$("bst").onclick=()=>{stop();step()};
+$("bp").onclick=stop;$("br").onclick=reset;$("bn").onclick=newArr;$("bt").onclick=()=>{rndT();reset()};
+$("sp").oninput=e=>{$("sv").textContent=e.target.value;if(timer){stop();timer=setInterval(step,speed())}};
+document.addEventListener("keydown",e=>{if((e.key=="n"||e.key=="N")&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)){e.preventDefault();$("bst").click()}});
+$("thm").onclick=()=>{const l=$("code").classList.toggle("lt");$("thm").textContent=l?"🌙 Tối":"☀️ Sáng"};
+const SP=window.speechSynthesis,ic="🔊";
+$("spk").onclick=()=>{if(!SP)return;if(SP.speaking){SP.cancel();$("spk").textContent=ic;return}const u=new SpeechSynthesisUtterance(A[al.value].n+". "+A[al.value].d);u.lang="vi-VN";u.onend=u.onerror=()=>$("spk").textContent=ic;$("spk").textContent="⏹";SP.speak(u)};
+al.onchange=()=>{if(SP)SP.cancel();$("spk").textContent=ic;reset()};$("lg").onchange=info;$("n").onchange=newArr;$("t").onchange=reset;
+function run(k,t){const g=A[k].g(arr,t);let c=0,r;while(!(r=g.next()).done)c++;return{c,f:r.value}}
+$("bc").onclick=()=>{const bx=$("cmpbox");if(!bx.hidden){bx.hidden=true;$("bc").textContent="So sánh các thuật toán";return}bx.hidden=false;$("bc").textContent="Ẩn bảng so sánh";const t=+$("t").value;const rows=[];let mx=1;
+for(const k in A){const o=run(k,t);let sum=0,w=0;for(const v of arr){const q=run(k,v).c;sum+=q;if(q>w)w=q}
+const avg=sum/arr.length;rows.push({n:A[k].n,cx:A[k].cx,c:o.c,f:o.f,avg,w});mx=Math.max(mx,avg,o.c)}
+$("cmp").innerHTML="<tr><th>Thuật toán</th><th>Phức tạp</th><th>Giá trị "+t+"</th><th>Trung bình</th><th>Xấu nhất</th><th></th></tr>"+rows.map(r=>`<tr><td>${r.n}</td><td>${r.cx}</td><td>${r.c}${r.f<0?" (không thấy)":""}</td><td>${r.avg.toFixed(1)}</td><td>${r.w}</td><td style="min-width:90px"><div class="bar" style="width:${r.avg/mx*100}%"></div></td></tr>`).join("")};
+newArr();
+</script></body></html>
