@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trực quan hóa - nền tảng lập trình</title>
+<style>
+:root{--bg:#f6f7fb;--sf:#fff;--tx:#1d2433;--mu:#667085;--bd:#dde1ea;--ac:#4f46e5;--hl:#fff3bf;--cb:#fafbff;--kw:#a626a4;--st:#2e7d32;--nu:#c25b00;--box:#eef2ff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1220;--sf:#181c30;--tx:#e6e9f5;--mu:#98a1bd;--bd:#2c3250;--ac:#8b8dff;--hl:#4a4320;--cb:#12152a;--kw:#d291ff;--st:#8fd694;--nu:#ffb36b;--box:#232850}}
+:root[data-theme="dark"]{--bg:#0f1220;--sf:#181c30;--tx:#e6e9f5;--mu:#98a1bd;--bd:#2c3250;--ac:#8b8dff;--hl:#4a4320;--cb:#12152a;--kw:#d291ff;--st:#8fd694;--nu:#ffb36b;--box:#232850}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1100px;margin:0 auto;padding:16px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{font-size:20px;margin:0}
+button{font:inherit;color:var(--tx);background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--ac)}button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.row{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;align-items:center}
+.g{color:var(--mu);font-size:12px;margin-left:8px;text-transform:uppercase;letter-spacing:.04em}
+.g:first-child{margin-left:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px;min-width:0}
+.card h3{margin:0 0 8px;font-size:14px;color:var(--mu);font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+select{font:inherit;color:var(--tx);background:var(--cb);border:1px solid var(--bd);border-radius:8px;padding:5px 8px;cursor:pointer}
+.secs{border-bottom:2px solid var(--bd);padding-bottom:0;margin-bottom:0}
+.secs button{border:0;border-bottom:3px solid transparent;border-radius:8px 8px 0 0;background:none;font-weight:600;padding:8px 16px;margin-bottom:-2px}
+.secs button.on{background:none;color:var(--ac);border-bottom-color:var(--ac)}
+.code{counter-reset:n;background:var(--cb);border:1px solid var(--bd);border-radius:8px;padding:8px 0;overflow-x:auto;font:13px/1.65 ui-monospace,Menlo,Consolas,monospace}
+.ln{white-space:pre;padding:0 12px 0 0;min-width:max-content}
+.ln i{display:inline-block;width:34px;text-align:right;margin-right:12px;color:var(--mu);font-style:normal;user-select:none}
+.ln i:before{counter-increment:n;content:counter(n)}
+.ln.on{background:var(--hl);box-shadow:inset 3px 0 var(--ac)}
+.k{color:var(--kw);font-weight:600}.s{color:var(--st)}.m{color:var(--nu)}
+.vars{display:flex;flex-wrap:wrap;gap:10px;min-height:64px}
+.b{background:var(--box);border:2px solid var(--ac);border-radius:8px;padding:6px 12px;text-align:center;min-width:56px}
+.b small{display:block;color:var(--mu);font-size:11px}.b b{font-size:18px}
+.cells{display:flex;gap:4px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.c{width:46px;height:42px;display:grid;place-items:center;background:var(--box);border:2px solid var(--ac);border-radius:6px;font-weight:700}
+.con{background:#0b0d17;color:#7CFC9A;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;border-radius:8px;padding:8px 12px;min-height:40px;margin-top:12px;white-space:pre-wrap}
+.note{margin-top:10px;color:var(--mu);min-height:22px}
+.ctl{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+p.d{margin:0 0 10px;color:var(--mu)}
+.tg{width:34px;height:34px;padding:0;border-radius:50%;border:2px solid var(--tx);background:linear-gradient(90deg,#fff 50%,#111 50%)}
+.kn h4{margin:12px 0 4px;font-size:14px}.kn ul{margin:0;padding-left:20px}.kn p{margin:4px 0}.kn code{background:var(--box);padding:1px 5px;border-radius:4px}
+</style></head><body><div class="w">
+<header>
+  <button class="on">Home</button>
+  <h1>Trực quan hóa - nền tảng lập trình</h1><button id="th" class="tg" aria-label="Đổi giao diện sáng / tối" title="Sáng / Tối"></button></header>
+<nav class="row secs" id="sc"></nav>
+<div class="row" id="tp"></div>
+<p class="d" id="ds"></p>
+<div class="grid">
+<div class="card"><h3><span>Mã nguồn ví dụ</span><label>Ngôn ngữ: <select id="sel"></select></label></h3><div class="code" id="cd"></div></div>
+<div class="card"><h3>Trực quan hóa từng bước</h3>
+<div class="vars" id="vr"></div><div class="cells" id="ce"></div>
+<div class="con" id="co"></div><div class="note" id="nt"></div>
+<div class="ctl"><button id="pv">◀ Lùi</button><button id="nx">Tiếp ▶</button><button id="pl">⏵ Tự chạy</button><button id="rs">↺ Đặt lại</button></div></div>
+</div><div class="card kn" id="kn" hidden style="margin-top:14px"></div></div>
+<script>
+const L=['Python','Java','JavaScript','C#','C++'];
+// Mỗi dòng code có thể kết thúc bằng §n để gắn với bước chạy (không hiển thị).
+// Steps: [tag, biến "ten=giatri:kieu;...", mảng "1,2,3", output (| = xuống dòng), ghi chú]
+const T=[
+{g:'Nền tảng',n:'Biến',d:'Biến là "chiếc hộp" có tên dùng để lưu một giá trị trong bộ nhớ; có thể gán lại giá trị mới.',
+c:[`x = 10 §1
+name = "An" §2
+x = x + 5 §3
+print(x) §4`,`int x = 10; §1
+String name = "An"; §2
+x = x + 5; §3
+System.out.println(x); §4`,`let x = 10; §1
+let name = "An"; §2
+x = x + 5; §3
+console.log(x); §4`,`int x = 10; §1
+string name = "An"; §2
+x = x + 5; §3
+Console.WriteLine(x); §4`,`int x = 10; §1
+string name = "An"; §2
+x = x + 5; §3
+cout << x; §4`],
+s:[[1,'x=10:số nguyên','','','Tạo biến x và lưu 10'],[2,'x=10:số nguyên;name=An:chuỗi','','','Tạo biến name chứa chuỗi'],[3,'x=15:số nguyên;name=An:chuỗi','','','x + 5 = 15, ghi đè giá trị cũ của x'],[4,'x=15:số nguyên;name=An:chuỗi','','15','In giá trị của x']]},
+{g:'Nền tảng',n:'Kiểu dữ liệu',d:'Mỗi giá trị thuộc một kiểu: số nguyên, số thực, chuỗi, logic (đúng/sai). Kiểu quyết định phép toán hợp lệ.',
+c:[`a = 42 §1
+b = 3.14 §2
+c = "Hi" §3
+d = True §4`,`int a = 42; §1
+double b = 3.14; §2
+String c = "Hi"; §3
+boolean d = true; §4`,`let a = 42; §1
+let b = 3.14; §2
+let c = "Hi"; §3
+let d = true; §4`,`int a = 42; §1
+double b = 3.14; §2
+string c = "Hi"; §3
+bool d = true; §4`,`int a = 42; §1
+double b = 3.14; §2
+string c = "Hi"; §3
+bool d = true; §4`],
+s:[[1,'a=42:int','','','Số nguyên (int)'],[2,'a=42:int;b=3.14:số thực','','','Số thực (double / float)'],[3,'a=42:int;b=3.14:số thực;c=Hi:chuỗi','','','Chuỗi ký tự (string)'],[4,'a=42:int;b=3.14:số thực;c=Hi:chuỗi;d=true:logic','','','Logic (bool): chỉ true hoặc false']]},
+{g:'Nền tảng',n:'Cấu trúc điều kiện',d:'if / else if / else: chương trình chọn nhánh thực thi dựa trên điều kiện đúng hoặc sai.',
+c:[`score = 7 §1
+if score >= 8: §2
+    print("Giỏi") §3
+elif score >= 5: §4
+    print("Đạt") §5
+else: §6
+    print("Rớt") §7`,`int score = 7; §1
+if (score >= 8) { §2
+  System.out.println("Giỏi"); §3
+} else if (score >= 5) { §4
+  System.out.println("Đạt"); §5
+} else { §6
+  System.out.println("Rớt"); §7
+}`,`let score = 7; §1
+if (score >= 8) { §2
+  console.log("Giỏi"); §3
+} else if (score >= 5) { §4
+  console.log("Đạt"); §5
+} else { §6
+  console.log("Rớt"); §7
+}`,`int score = 7; §1
+if (score >= 8) { §2
+  Console.WriteLine("Giỏi"); §3
+} else if (score >= 5) { §4
+  Console.WriteLine("Đạt"); §5
+} else { §6
+  Console.WriteLine("Rớt"); §7
+}`,`int score = 7; §1
+if (score >= 8) { §2
+  cout << "Giỏi"; §3
+} else if (score >= 5) { §4
+  cout << "Đạt"; §5
+} else { §6
+  cout << "Rớt"; §7
+}`],
+s:[[1,'score=7:int','','',''],[2,'score=7:int','','','7 >= 8 ? SAI → bỏ qua nhánh if'],[4,'score=7:int','','','7 >= 5 ? ĐÚNG → vào nhánh này'],[5,'score=7:int','','Đạt','Thực thi, bỏ qua else']]},
+{g:'Nền tảng',n:'Vòng lặp for',d:'for dùng khi biết trước số lần lặp: khởi tạo → kiểm tra điều kiện → thân vòng lặp → cập nhật. Ví dụ: cộng các số 1, 2, 3.',
+c:[`total = 0 §1
+for i in range(1, 4): §2
+    total += i §3
+print(total) §4`,`int total = 0; §1
+for (int i = 1; i < 4; i++) { §2
+  total += i; §3
+}
+System.out.println(total); §4`,`let total = 0; §1
+for (let i = 1; i < 4; i++) { §2
+  total += i; §3
+}
+console.log(total); §4`,`int total = 0; §1
+for (int i = 1; i < 4; i++) { §2
+  total += i; §3
+}
+Console.WriteLine(total); §4`,`int total = 0; §1
+for (int i = 1; i < 4; i++) { §2
+  total += i; §3
+}
+cout << total; §4`],
+s:[[1,'total=0','','','Khởi tạo tổng'],[2,'total=0;i=1','','','Lần lặp 1: i = 1'],[3,'total=1;i=1','','','total = 0 + 1'],[2,'total=1;i=2','','','Lần lặp 2: i = 2'],[3,'total=3;i=2','','','total = 1 + 2'],[2,'total=3;i=3','','','Lần lặp 3: i = 3'],[3,'total=6;i=3','','','total = 3 + 3'],[4,'total=6','','6','i = 4 không còn thỏa i < 4 → thoát vòng lặp']]},
+{g:'Nền tảng',n:'Vòng lặp while',d:'while kiểm tra điều kiện TRƯỚC mỗi lần lặp, dùng khi chưa biết trước số lần lặp (đọc dữ liệu đến khi hết, chờ người dùng nhập đúng...). Nếu điều kiện sai ngay từ đầu, thân vòng lặp không chạy lần nào.',
+c:[`n = 3 §1
+while n > 0: §2
+    print(n) §3
+    n -= 1 §4`,`int n = 3; §1
+while (n > 0) { §2
+  System.out.println(n); §3
+  n--; §4
+}`,`let n = 3; §1
+while (n > 0) { §2
+  console.log(n); §3
+  n--; §4
+}`,`int n = 3; §1
+while (n > 0) { §2
+  Console.WriteLine(n); §3
+  n--; §4
+}`,`int n = 3; §1
+while (n > 0) { §2
+  cout << n << endl; §3
+  n--; §4
+}`],
+s:[[1,'n=3','','',''],[2,'n=3','','','3 > 0 đúng → vào vòng lặp'],[3,'n=3','','3','In n'],[4,'n=2','','3','Giảm n'],[2,'n=2','','3','2 > 0 đúng'],[3,'n=2','','3|2',''],[4,'n=1','','3|2',''],[2,'n=1','','3|2','1 > 0 đúng'],[3,'n=1','','3|2|1',''],[4,'n=0','','3|2|1',''],[2,'n=0','','3|2|1','0 > 0 sai → thoát vòng lặp']]},
+{g:'Nền tảng',n:'Vòng lặp do while',d:'do...while kiểm tra điều kiện SAU mỗi lần lặp nên thân vòng lặp luôn chạy ít nhất 1 lần (ví dụ: hiện menu rồi mới hỏi có tiếp tục không). Python không có do...while nên dùng while True + break.',
+c:[`n = 5 §1
+while True: §2
+    print("n =", n) §3
+    n += 1 §4
+    if n >= 3: break §5`,`int n = 5; §1
+do { §2
+  System.out.println("n = " + n); §3
+  n++; §4
+} while (n < 3); §5`,`let n = 5; §1
+do { §2
+  console.log("n = " + n); §3
+  n++; §4
+} while (n < 3); §5`,`int n = 5; §1
+do { §2
+  Console.WriteLine("n = " + n); §3
+  n++; §4
+} while (n < 3); §5`,`int n = 5; §1
+do { §2
+  cout << "n = " << n << endl; §3
+  n++; §4
+} while (n < 3); §5`],
+s:[[1,'n=5','','',''],[2,'n=5','','','Vào thân vòng lặp ngay, chưa kiểm tra điều kiện'],[3,'n=5','','n = 5',''],[4,'n=6','','n = 5',''],[5,'n=6','','n = 5','6 < 3 sai → thoát. Thân vòng lặp đã chạy đúng 1 lần (while thường sẽ chạy 0 lần)']]},
+{g:'Nền tảng',n:'Vòng lặp foreach',d:'foreach duyệt trực tiếp từng phần tử của mảng/danh sách mà không cần chỉ số: gọn, ít lỗi vượt biên. Python: for...in; JavaScript: for...of (còn for...in duyệt tên thuộc tính của object); Java/C++: for (kiểu x : tập); C#: foreach.',
+c:[`names = ["An", "Bình", "Chi"] §1
+for name in names: §2
+    print(name) §3`,`String[] names = {"An", "Bình", "Chi"}; §1
+for (String name : names) { §2
+  System.out.println(name); §3
+}`,`const names = ["An", "Bình", "Chi"]; §1
+for (const name of names) { §2
+  console.log(name); §3
+}`,`string[] names = {"An", "Bình", "Chi"}; §1
+foreach (var name in names) { §2
+  Console.WriteLine(name); §3
+}`,`vector<string> names = {"An", "Bình", "Chi"}; §1
+for (const string& name : names) { §2
+  cout << name << endl; §3
+}`],
+s:[[1,'','An,Bình,Chi','','Mảng 3 phần tử'],[2,'name=An','An,Bình,Chi','','Lấy phần tử kế tiếp gán vào name'],[3,'name=An','An,Bình,Chi','An',''],[2,'name=Bình','An,Bình,Chi','An',''],[3,'name=Bình','An,Bình,Chi','An|Bình',''],[2,'name=Chi','An,Bình,Chi','An|Bình',''],[3,'name=Chi','An,Bình,Chi','An|Bình|Chi','Hết phần tử → tự thoát']],dl:'chỉ số 0 →'},
+{g:'Nền tảng',n:'Vòng lặp viết tắt (JS)',d:'JavaScript có các phương thức mảng thay cho vòng lặp tường minh: forEach (duyệt), map (biến đổi), filter (lọc), reduce (gộp). Các ngôn ngữ khác có dạng tương đương: list comprehension (Python), Stream (Java), LINQ (C#), thuật toán STL + lambda (C++).',
+c:[`a = [1, 2, 3] §1
+for x in a: print(x) §2
+b = [x * 2 for x in a] §3
+c = [x for x in b if x > 2] §4
+s = sum(c) §5`,`List<Integer> a = List.of(1, 2, 3); §1
+a.forEach(x -> System.out.println(x)); §2
+var b = a.stream().map(x -> x * 2).toList(); §3
+var c = b.stream().filter(x -> x > 2).toList(); §4
+int s = c.stream().reduce(0, Integer::sum); §5`,`const a = [1, 2, 3]; §1
+a.forEach(x => console.log(x)); §2
+const b = a.map(x => x * 2); §3
+const c = b.filter(x => x > 2); §4
+const s = c.reduce((t, x) => t + x, 0); §5`,`var a = new List<int> {1, 2, 3}; §1
+a.ForEach(x => Console.WriteLine(x)); §2
+var b = a.Select(x => x * 2).ToList(); §3
+var c = b.Where(x => x > 2).ToList(); §4
+int s = c.Sum(); §5`,`vector<int> a = {1, 2, 3}; §1
+for_each(a.begin(), a.end(), [](int x){ cout << x << endl; }); §2
+vector<int> b(3); transform(a.begin(), a.end(), b.begin(), [](int x){ return x * 2; }); §3
+vector<int> c; copy_if(b.begin(), b.end(), back_inserter(c), [](int x){ return x > 2; }); §4
+int s = accumulate(c.begin(), c.end(), 0); §5`],
+s:[[1,'a=[1,2,3]','','',''],[2,'a=[1,2,3]','','1|2|3','forEach: chạy hàm cho từng phần tử, không trả về mảng'],[3,'a=[1,2,3];b=[2,4,6]','','1|2|3','map: tạo mảng mới, mỗi phần tử nhân 2'],[4,'b=[2,4,6];c=[4,6]','','1|2|3','filter: giữ phần tử thỏa x > 2'],[5,'c=[4,6];s=10','','1|2|3','reduce: gộp cả mảng thành 1 giá trị (4 + 6)']]},
+{g:'Nền tảng',n:'Hàm',d:'Hàm gom một đoạn lệnh có tên, nhận tham số và trả về kết quả; giúp tái sử dụng code.',
+c:[`def square(n): §1
+    return n * n §2
+r = square(4) §3
+print(r) §4`,`static int square(int n) { §1
+  return n * n; §2
+}
+int r = square(4); §3
+System.out.println(r); §4`,`function square(n) { §1
+  return n * n; §2
+}
+const r = square(4); §3
+console.log(r); §4`,`static int Square(int n) { §1
+  return n * n; §2
+}
+int r = Square(4); §3
+Console.WriteLine(r); §4`,`int square(int n) { §1
+  return n * n; §2
+}
+int r = square(4); §3
+cout << r; §4`],
+s:[[3,'r=?','','','Gọi hàm square với đối số 4'],[1,'n=4:tham số','','','Tham số n nhận giá trị 4'],[2,'n=4:tham số;kết quả=16','','','Tính n * n = 16 và trả về'],[3,'r=16','','','r nhận giá trị trả về'],[4,'r=16','','16','']]},
+{g:'Nền tảng',n:'Xử lý ngoại lệ (Exception)',d:'Ngoại lệ là lỗi xảy ra lúc chạy (chia cho 0, mở file không tồn tại, mất mạng, chuyển chuỗi sang số sai...). try chứa đoạn có thể lỗi, catch xử lý theo loại lỗi, finally luôn chạy (đóng file, đóng kết nối). Lưu ý: JavaScript chia cho 0 ra Infinity và C++ không ném lỗi khi chia số nguyên cho 0, nên ví dụ dùng throw để tự ném ngoại lệ.',
+c:[`try: §1
+    r = 10 / 0 §2
+except ZeroDivisionError: §3
+    print("Lỗi: chia cho 0") §4
+finally: §5
+    print("Luôn chạy") §6`,`try { §1
+  int r = 10 / 0; §2
+} catch (ArithmeticException e) { §3
+  System.out.println("Lỗi: chia cho 0"); §4
+} finally { §5
+  System.out.println("Luôn chạy"); §6
+}`,`try { §1
+  throw new Error("chia cho 0"); §2
+} catch (e) { §3
+  console.log("Lỗi: " + e.message); §4
+} finally { §5
+  console.log("Luôn chạy"); §6
+}`,`try { §1
+  int r = 10 / int.Parse("0"); §2
+} catch (DivideByZeroException e) { §3
+  Console.WriteLine("Lỗi: chia cho 0"); §4
+} finally { §5
+  Console.WriteLine("Luôn chạy"); §6
+}`,`try { §1
+  throw runtime_error("chia cho 0"); §2
+} catch (const exception& e) { §3
+  cout << "Lỗi: chia cho 0" << endl; §4
+} /* C++ không có finally: dùng RAII */ §5
+cout << "Luôn chạy" << endl; §6`],
+s:[[1,'r=?','','','Bắt đầu khối try'],[2,'r=?','','','Phát sinh ngoại lệ → bỏ qua phần còn lại của try'],[3,'r=?','','','Chương trình nhảy tới catch khớp loại lỗi'],[4,'r=?','','Lỗi: chia cho 0','Xử lý lỗi nhẹ nhàng thay vì làm chương trình sập'],[5,'r=?','','Lỗi: chia cho 0','Đến finally'],[6,'r=?','','Lỗi: chia cho 0|Luôn chạy','finally chạy dù có lỗi hay không']],
+k:1},
+{g:'Cấu trúc dữ liệu',n:'Mảng (Array)',d:'Mảng là dãy ô nhớ liên tiếp, kích thước CỐ ĐỊNH khi tạo, mọi phần tử cùng kiểu, truy cập theo chỉ số (từ 0) rất nhanh. Truy cập chỉ số ngoài phạm vi (a[3] với mảng 3 phần tử) gây lỗi hoặc hành vi không xác định.',
+c:[`a = [0] * 3 §1
+a[0] = 5 §2
+a[1] = 8 §3
+a[2] = 2 §4
+print(a[1]) §5`,`int[] a = new int[3]; §1
+a[0] = 5; §2
+a[1] = 8; §3
+a[2] = 2; §4
+System.out.println(a[1]); §5`,`const a = new Array(3).fill(0); §1
+a[0] = 5; §2
+a[1] = 8; §3
+a[2] = 2; §4
+console.log(a[1]); §5`,`int[] a = new int[3]; §1
+a[0] = 5; §2
+a[1] = 8; §3
+a[2] = 2; §4
+Console.WriteLine(a[1]); §5`,`int a[3] = {}; §1
+a[0] = 5; §2
+a[1] = 8; §3
+a[2] = 2; §4
+cout << a[1]; §5`],
+s:[[1,'','0,0,0','','Cấp phát 3 ô liên tiếp, giá trị mặc định 0'],[2,'','5,0,0','','Gán a[0]'],[3,'','5,8,0','','Gán a[1]'],[4,'','5,8,2','','Gán a[2]; không thể thêm ô thứ 4'],[5,'','5,8,2','8','Đọc a[1] – truy cập trực tiếp theo chỉ số']],dl:'chỉ số 0 →'},
+{g:'Cấu trúc dữ liệu',n:'Danh sách (List)',d:'Danh sách có kích thước LINH HOẠT: thêm, chèn, xóa phần tử và tự co giãn bộ nhớ (ArrayList, List<T>, vector, list của Python, mảng JavaScript). Đổi lại, tốn thêm bộ nhớ và chèn/xóa ở giữa phải dịch các phần tử.',
+c:[`a = [5, 8, 2] §1
+a.append(9) §2
+a[1] = 7 §3
+print(a[0]) §4`,`List<Integer> a = new ArrayList<>(List.of(5, 8, 2)); §1
+a.add(9); §2
+a.set(1, 7); §3
+System.out.println(a.get(0)); §4`,`const a = [5, 8, 2]; §1
+a.push(9); §2
+a[1] = 7; §3
+console.log(a[0]); §4`,`var a = new List<int> {5, 8, 2}; §1
+a.Add(9); §2
+a[1] = 7; §3
+Console.WriteLine(a[0]); §4`,`vector<int> a = {5, 8, 2}; §1
+a.push_back(9); §2
+a[1] = 7; §3
+cout << a[0]; §4`],
+s:[[1,'','5,8,2','','Chỉ số: 0, 1, 2'],[2,'','5,8,2,9','','Thêm vào cuối → chỉ số 3'],[3,'','5,7,2,9','','Ghi đè phần tử ở chỉ số 1'],[4,'','5,7,2,9','5','Đọc phần tử chỉ số 0']],dl:'chỉ số 0 →'},
+{g:'Cấu trúc dữ liệu',n:'Stack (ngăn xếp)',d:'LIFO – vào sau, ra trước. Chỉ thao tác ở đỉnh: push (thêm) và pop (lấy ra).',
+c:[`s = [] §1
+s.append(1) §2
+s.append(2) §3
+s.pop() §4`,`Stack<Integer> s = new Stack<>(); §1
+s.push(1); §2
+s.push(2); §3
+s.pop(); §4`,`const s = []; §1
+s.push(1); §2
+s.push(2); §3
+s.pop(); §4`,`var s = new Stack<int>(); §1
+s.Push(1); §2
+s.Push(2); §3
+s.Pop(); §4`,`stack<int> s; §1
+s.push(1); §2
+s.push(2); §3
+s.pop(); §4`],
+s:[[1,'','','','Stack rỗng'],[2,'','1','','push(1)'],[3,'','1,2','','push(2) – 2 nằm ở đỉnh'],[4,'','1','','pop() lấy 2 ra trước (vào sau, ra trước)']],dl:'đáy → đỉnh'},
+{g:'Cấu trúc dữ liệu',n:'Queue (hàng đợi)',d:'FIFO – vào trước, ra trước. Thêm ở cuối, lấy ra ở đầu.',
+c:[`q = deque() §1
+q.append(1) §2
+q.append(2) §3
+q.popleft() §4`,`Queue<Integer> q = new LinkedList<>(); §1
+q.add(1); §2
+q.add(2); §3
+q.poll(); §4`,`const q = []; §1
+q.push(1); §2
+q.push(2); §3
+q.shift(); §4`,`var q = new Queue<int>(); §1
+q.Enqueue(1); §2
+q.Enqueue(2); §3
+q.Dequeue(); §4`,`queue<int> q; §1
+q.push(1); §2
+q.push(2); §3
+q.pop(); §4`],
+s:[[1,'','','','Hàng đợi rỗng'],[2,'','1','','Thêm 1 vào cuối'],[3,'','1,2','','Thêm 2 vào cuối'],[4,'','2','','Lấy phần tử ở đầu (1) ra trước']],dl:'đầu → cuối'},
+{g:'Cấu trúc dữ liệu',n:'Dictionary / Map',d:'Lưu cặp khóa → giá trị; tra cứu nhanh theo khóa thay vì theo chỉ số.',
+c:[`d = {} §1
+d["An"] = 9 §2
+d["Bình"] = 7 §3
+print(d["An"]) §4`,`Map<String,Integer> d = new HashMap<>(); §1
+d.put("An", 9); §2
+d.put("Bình", 7); §3
+System.out.println(d.get("An")); §4`,`const d = new Map(); §1
+d.set("An", 9); §2
+d.set("Bình", 7); §3
+console.log(d.get("An")); §4`,`var d = new Dictionary<string,int>(); §1
+d["An"] = 9; §2
+d["Bình"] = 7; §3
+Console.WriteLine(d["An"]); §4`,`map<string,int> d; §1
+d["An"] = 9; §2
+d["Bình"] = 7; §3
+cout << d["An"]; §4`],
+s:[[1,'','','','Map rỗng'],[2,'An=9:khóa → giá trị','','','Thêm cặp "An" → 9'],[3,'An=9:khóa → giá trị;Bình=7:khóa → giá trị','','','Thêm cặp "Bình" → 7'],[4,'An=9:khóa → giá trị;Bình=7:khóa → giá trị','','9','Tra theo khóa "An" được 9']]},
+{g:'Hướng đối tượng',n:'Lớp & đối tượng',d:'Lớp (class) là bản thiết kế gồm thuộc tính và phương thức; đối tượng (object) là một thể hiện cụ thể của lớp.',
+c:[`class Dog: §1
+    def __init__(self, name): §2
+        self.name = name §3
+    def speak(self): §4
+        print(self.name + " gâu!") §5
+d = Dog("Rex") §6
+d.speak() §7`,`class Dog { §1
+  String name;
+  Dog(String name) { §2
+    this.name = name; §3
+  }
+  void speak() { §4
+    System.out.println(name + " gâu!"); §5
+  }
+}
+Dog d = new Dog("Rex"); §6
+d.speak(); §7`,`class Dog { §1
+  constructor(name) { §2
+    this.name = name; §3
+  }
+  speak() { §4
+    console.log(this.name + " gâu!"); §5
+  }
+}
+const d = new Dog("Rex"); §6
+d.speak(); §7`,`class Dog { §1
+  public string Name;
+  public Dog(string name) { §2
+    Name = name; §3
+  }
+  public void Speak() { §4
+    Console.WriteLine(Name + " gâu!"); §5
+  }
+}
+var d = new Dog("Rex"); §6
+d.Speak(); §7`,`class Dog { §1
+public:
+  string name;
+  Dog(string n) { §2
+    name = n; §3
+  }
+  void speak() { §4
+    cout << name << " gâu!"; §5
+  }
+};
+Dog d("Rex"); §6
+d.speak(); §7`],
+s:[[6,'d=?','','','Tạo đối tượng từ lớp Dog'],[2,'tham số=Rex','','','Hàm khởi tạo (constructor) chạy'],[3,'d=Dog{name: Rex}:đối tượng','','','Gán thuộc tính name cho đối tượng'],[7,'d=Dog{name: Rex}:đối tượng','','','Gọi phương thức speak()'],[5,'d=Dog{name: Rex}:đối tượng','','Rex gâu!','']]},
+{g:'Hướng đối tượng',n:'Đóng gói',d:'Đóng gói giấu dữ liệu bên trong lớp (private) và chỉ cho thao tác qua phương thức công khai, để lớp tự kiểm soát dữ liệu luôn hợp lệ.',
+c:[`class Account: §1
+    def __init__(self):
+        self.__balance = 0 §2
+    def deposit(self, amt): §4
+        if amt > 0: §5
+            self.__balance += amt §6
+acc = Account() §7
+acc.deposit(100) §8
+acc.deposit(-50) §9`,`class Account { §1
+  private int balance = 0; §2
+  void deposit(int amt) { §4
+    if (amt > 0) { §5
+      balance += amt; §6
+    }
+  }
+}
+Account acc = new Account(); §7
+acc.deposit(100); §8
+acc.deposit(-50); §9`,`class Account { §1
+  #balance = 0; §2
+  deposit(amt) { §4
+    if (amt > 0) { §5
+      this.#balance += amt; §6
+    }
+  }
+}
+const acc = new Account(); §7
+acc.deposit(100); §8
+acc.deposit(-50); §9`,`class Account { §1
+  private int balance = 0; §2
+  public void Deposit(int amt) { §4
+    if (amt > 0) { §5
+      balance += amt; §6
+    }
+  }
+}
+var acc = new Account(); §7
+acc.Deposit(100); §8
+acc.Deposit(-50); §9`,`class Account { §1
+  int balance = 0; §2
+public:
+  void deposit(int amt) { §4
+    if (amt > 0) { §5
+      balance += amt; §6
+    }
+  }
+};
+Account acc; §7
+acc.deposit(100); §8
+acc.deposit(-50); §9`],
+s:[[7,'balance=0:private','','','Tạo tài khoản mới'],[8,'amt=100;balance=0:private','','','Gọi deposit(100)'],[6,'balance=100:private','','','100 > 0 hợp lệ → cộng vào số dư'],[9,'amt=-50;balance=100:private','','','-50 > 0 sai → bị từ chối, số dư vẫn 100. Bên ngoài không thể gán thẳng balance = -999']],k:1},
+{g:'Hướng đối tượng',n:'Kế thừa & đa hình',d:'Lớp con kế thừa lớp cha và có thể ghi đè (override) phương thức; cùng lời gọi nhưng hành vi tùy đối tượng thật.',
+c:[`class Animal: §1
+    def speak(self): §2
+        print("...") §3
+class Dog(Animal): §4
+    def speak(self): §5
+        print("Gâu!") §6
+for a in [Animal(), Dog()]: §7
+    a.speak() §8`,`class Animal { §1
+  void speak() { §2
+    System.out.println("..."); §3
+  }
+}
+class Dog extends Animal { §4
+  @Override void speak() { §5
+    System.out.println("Gâu!"); §6
+  }
+}
+Animal[] list = { new Animal(), new Dog() }; §7
+for (Animal a : list) a.speak(); §8`,`class Animal { §1
+  speak() { §2
+    console.log("..."); §3
+  }
+}
+class Dog extends Animal { §4
+  speak() { §5
+    console.log("Gâu!"); §6
+  }
+}
+for (const a of [new Animal(), new Dog()]) { §7
+  a.speak(); §8
+}`,`class Animal { §1
+  public virtual void Speak() { §2
+    Console.WriteLine("..."); §3
+  }
+}
+class Dog : Animal { §4
+  public override void Speak() { §5
+    Console.WriteLine("Gâu!"); §6
+  }
+}
+foreach (var a in new Animal[] { new Animal(), new Dog() }) { §7
+  a.Speak(); §8
+}`,`class Animal { §1
+public:
+  virtual void speak() { §2
+    cout << "...\\n"; §3
+  }
+};
+class Dog : public Animal { §4
+public:
+  void speak() override { §5
+    cout << "Gâu!\\n"; §6
+  }
+};
+Animal* list[] = { new Animal(), new Dog() }; §7
+for (auto a : list) a->speak(); §8`],
+s:[[7,'a=Animal:đối tượng','','','Phần tử đầu tiên là Animal'],[3,'a=Animal:đối tượng','','...','Chạy Animal.speak()'],[7,'a=Dog:đối tượng','','...','Phần tử thứ hai là Dog'],[6,'a=Dog:đối tượng','','...|Gâu!','Cùng lời gọi a.speak() nhưng chạy Dog.speak() → đa hình']]},
+{g:'Hướng đối tượng',n:'Trừu tượng & Interface',d:'Lớp trừu tượng/interface định nghĩa “cần làm gì” (hợp đồng) mà không nói “làm thế nào”; lớp con bắt buộc phải cài đặt. Không thể tạo đối tượng trực tiếp từ lớp trừu tượng.',
+c:[`from abc import ABC, abstractmethod
+class Shape(ABC): §2
+    @abstractmethod
+    def area(self): pass §3
+class Square(Shape): §4
+    def __init__(self, s): self.s = s
+    def area(self): §5
+        return self.s ** 2 §6
+shape = Square(3) §7
+print(shape.area()) §8`,`abstract class Shape { §2
+  abstract int area(); §3
+}
+class Square extends Shape { §4
+  int s;
+  Square(int s) { this.s = s; }
+  int area() { §5
+    return s * s; §6
+  }
+}
+Shape shape = new Square(3); §7
+System.out.println(shape.area()); §8`,`class Shape { §2
+  area() { throw new Error("Chưa cài đặt"); } §3
+}
+class Square extends Shape { §4
+  constructor(s) { super(); this.s = s; }
+  area() { §5
+    return this.s ** 2; §6
+  }
+}
+const shape = new Square(3); §7
+console.log(shape.area()); §8`,`abstract class Shape { §2
+  public abstract int Area(); §3
+}
+class Square : Shape { §4
+  int s;
+  public Square(int s) { this.s = s; }
+  public override int Area() { §5
+    return s * s; §6
+  }
+}
+Shape shape = new Square(3); §7
+Console.WriteLine(shape.Area()); §8`,`class Shape { §2
+public:
+  virtual int area() = 0; §3
+};
+class Square : public Shape { §4
+  int s;
+public:
+  Square(int s) : s(s) {}
+  int area() override { §5
+    return s * s; §6
+  }
+};
+Square sq(3); Shape* shape = &sq; §7
+cout << shape->area(); §8`],
+s:[[7,'shape=Square{s: 3}:đối tượng','','','Biến kiểu Shape trỏ tới đối tượng Square'],[8,'shape=Square{s: 3}:đối tượng','','','Gọi area() qua kiểu trừu tượng Shape'],[5,'s=3:thuộc tính','','','Chạy cài đặt của Square'],[6,'s=3:thuộc tính;kết quả=9','','9','Nơi gọi chỉ cần biết Shape có area(), không cần biết hình cụ thể']],k:1}
+];
+let ti=0,si=-1,tm=null;const G=['Nền tảng','Cấu trúc dữ liệu','Hướng đối tượng'],LI=[0,0,0],sec=()=>G.indexOf(T[ti].g);
+const $=id=>document.getElementById(id),E=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const K={
+'Lớp & đối tượng':`<h4>Hướng đối tượng (OOP) là gì?</h4><p>Cách tổ chức chương trình thành các <b>đối tượng</b>: mỗi đối tượng gom <b>dữ liệu (thuộc tính)</b> và <b>hành vi (phương thức)</b> của một thực thể trong bài toán. Lớp là bản thiết kế; đối tượng là bản thể được tạo từ lớp thông qua hàm khởi tạo (constructor).</p><h4>Ví dụ thực tế</h4><ul><li>Quản lý đào tạo: lớp <code>SinhVien</code> (mssv, hoTen, diemTB; dangKyMon(), xemDiem()); mỗi sinh viên là một đối tượng riêng.</li><li>Game: lớp <code>Enemy</code> sinh ra hàng trăm kẻ địch, mỗi con có máu và vị trí riêng.</li><li>Ứng dụng web: User, Order, Product thường ánh xạ trực tiếp với các bảng cơ sở dữ liệu.</li></ul><h4>4 trụ cột của OOP</h4><ul><li><b>Đóng gói</b>: giấu dữ liệu, chỉ truy cập qua phương thức.</li><li><b>Kế thừa</b>: lớp con tái sử dụng và mở rộng lớp cha.</li><li><b>Đa hình</b>: cùng lời gọi, hành vi tùy đối tượng thật.</li><li><b>Trừu tượng</b>: chỉ phơi bày “cái gì”, che giấu “làm thế nào”.</li></ul><h4>Lợi ích</h4><p>Tái sử dụng code, dễ bảo trì và mở rộng, chia việc theo lớp khi làm nhóm, dễ kiểm thử từng phần.</p>`,
+'Đóng gói':`<h4>Phạm vi truy cập</h4><ul><li><code>private</code>: chỉ dùng trong chính lớp (Python dùng quy ước <code>__ten</code>, JavaScript dùng <code>#ten</code>).</li><li><code>protected</code>: lớp và các lớp con.</li><li><code>public</code>: mọi nơi.</li></ul><h4>Thực tế</h4><ul><li>Tài khoản ngân hàng: số dư chỉ đổi qua nạp/rút có kiểm tra điều kiện, không ai gán tùy ý.</li><li>Lớp User: mật khẩu được băm khi lưu, bên ngoài không đọc được bản gốc.</li></ul><h4>Nguyên tắc</h4><p>Đặt thuộc tính private, cung cấp getter/setter hoặc phương thức nghiệp vụ có kiểm tra (validation). Có thể đổi cách cài đặt bên trong mà không ảnh hưởng code bên ngoài.</p>`,
+'Kế thừa & đa hình':`<h4>Kế thừa (quan hệ “là một”)</h4><p>Dog là một Animal; Manager là một Employee. Lớp con thừa hưởng thuộc tính, phương thức của lớp cha và có thể ghi đè (override) hoặc bổ sung. Dùng <code>super</code>/<code>base</code> để gọi lại lớp cha.</p><h4>Đa hình</h4><p>Cùng một lời gọi <code>a.speak()</code> nhưng chạy phiên bản của đối tượng thật. Thực tế: danh sách các hình khác nhau cùng gọi <code>draw()</code>; nhiều cổng thanh toán cùng gọi <code>pay()</code>.</p><h4>Lưu ý thực tế</h4><ul><li>Java, C#: một lớp cha, nhiều interface. C++, Python: cho phép đa kế thừa.</li><li>Chỉ kế thừa khi thật sự là “là một”; nếu là “có một” (Car có Engine) hãy dùng <b>composition</b> – thường linh hoạt hơn.</li><li>Tránh cây kế thừa quá sâu, khó hiểu và khó sửa.</li></ul>`,
+'Trừu tượng & Interface':`<h4>Lớp trừu tượng và interface</h4><ul><li><b>Lớp trừu tượng</b>: có thể chứa cả phần đã cài đặt lẫn phương thức trừu tượng; dùng khi các lớp con có phần chung.</li><li><b>Interface</b>: chỉ khai báo hợp đồng; một lớp có thể cài đặt nhiều interface.</li></ul><h4>Thực tế</h4><p>Interface <code>PhuongThucThanhToan</code> với <code>pay()</code>: Momo, thẻ, tiền mặt đều cài đặt riêng. Phần xử lý đơn hàng chỉ phụ thuộc interface nên thêm cổng mới mà không sửa code cũ (nguyên lý Open/Closed và Dependency Inversion trong SOLID).</p>`,
+'Xử lý ngoại lệ (Exception)':`<h4>Thực hành tốt</h4><ul><li>Bắt đúng loại ngoại lệ cụ thể, tránh <code>catch</code> chung chung rồi bỏ qua (nuốt lỗi).</li><li>Dùng finally (hoặc with / using / try-with-resources) để luôn giải phóng file, kết nối CSDL.</li><li>Ném ngoại lệ (<code>throw</code>) khi dữ liệu không hợp lệ; có thể tự định nghĩa lớp ngoại lệ kế thừa từ lớp lỗi gốc, ví dụ <code>SoDuKhongDuException</code>.</li><li>Ghi log và báo lỗi dễ hiểu cho người dùng, không để lộ chi tiết nội bộ.</li></ul><h4>Thực tế</h4><p>Đọc file điểm không tồn tại, nhập “abc” vào ô số, mất kết nối API: chương trình cần báo lỗi và chạy tiếp thay vì sập.</p>`};
+const KW=/("[^"]*")|(\b(?:def|class|return|if|elif|else|for|in|range|while|new|public|static|void|int|double|boolean|bool|string|String|let|const|var|function|extends|override|virtual|auto|this|self|true|false|True|False|constructor|foreach|import|List|Map|Stack|Queue|Dictionary|stack|queue|map|vector)\b)|(\b\d+(?:\.\d+)?\b)/g;
+const hl=t=>E(t).replace(KW,(m,s,k,n)=>s?`<span class="s">${m}</span>`:k?`<span class="k">${m}</span>`:`<span class="m">${m}</span>`);
+function draw(){
+ const t=T[ti];let g='';
+ const sc=sec(),li=LI[sc];
+ $('sc').innerHTML=G.map((x,i)=>`<button class="${i==sc?'on':''}" data-s="${i}">${i+1}. ${x}</button>`).join('');
+ $('tp').innerHTML=T.map((x,i)=>x.g==G[sc]?`<button class="${i==ti?'on':''}" data-t="${i}">${x.n}</button>`:'').join('');
+ $('sel').innerHTML=L.map((x,i)=>`<option value="${i}"${i==li?' selected':''}>${x}</option>`).join('');
+ $('ds').textContent=t.d;$('kn').hidden=!K[t.n];$('kn').innerHTML=K[t.n]||'';
+ const st=si>=0?t.s[si]:null;
+ $('cd').innerHTML=t.c[li].split('\n').map(l=>{const m=/\s*§(\d+)\s*$/.exec(l);const tag=m?+m[1]:0;
+  return `<div class="ln${st&&tag==st[0]?' on':''}"><i></i>${hl(m?l.slice(0,m.index):l)||' '}</div>`}).join('');
+ $('vr').innerHTML=st?st[1].split(';').filter(Boolean).map(p=>{const [k,r]=p.split('=');const [v,ty]=r.split(':');
+  return `<div class="b"><small>${E(k)}</small><b>${E(v)}</b>${ty?`<small>${E(ty)}</small>`:''}</div>`}).join(''):'';
+ if(st&&t.dl){const a=st[2]?st[2].split(','):[];$('ce').innerHTML=`<small style="color:var(--mu)">${t.dl}</small>`+(a.length?a.map(x=>`<div class="c">${x}</div>`).join(''):'<i style="color:var(--mu)">(rỗng)</i>')}else $('ce').innerHTML='';
+ $('co').textContent=st?(st[3]||'').split('|').join('\n')||'›':'›';
+ $('nt').textContent=st?st[4]:'Nhấn "Tiếp ▶" để chạy chương trình từng bước.';
+}
+const stop=()=>{clearInterval(tm);tm=null;$('pl').textContent='⏵ Tự chạy'};
+const go=d=>{const n=T[ti].s.length;si=Math.max(-1,Math.min(n-1,si+d));draw();return si<n-1};
+document.body.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.t!=null){ti=+b.dataset.t;si=-1;stop()}else if(b.dataset.s!=null){ti=T.findIndex(x=>x.g==G[+b.dataset.s]);si=-1;stop()}
+ else if(b.id=='nx'){stop();go(1);return}else if(b.id=='pv'){stop();go(-1);return}else if(b.id=='rs'){stop();si=-1}
+ else if(b.id=='pl'){if(tm){stop();return}if(si>=T[ti].s.length-1)si=-1;b.textContent='⏸ Dừng';go(1);tm=setInterval(()=>{if(!go(1))stop()},1100);return}
+ else if(b.id=='th'){const r=document.documentElement,dk=r.dataset.theme?r.dataset.theme=='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=dk?'light':'dark';return}
+ draw()});
+$('sel').onchange=e=>{LI[sec()]=+e.target.value;draw()};
+draw();
+</script></body></html>

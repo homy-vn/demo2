@@ -1,20 +1,692 @@
 <!DOCTYPE html>
-<html>
-<body>
-<h1><a href="index.html">Home</a></h1>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HappyCode</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans text-[18px] leading-[1.7] antialiased transition-colors duration-300 selection:bg-sky-500 selection:text-white">
 
-<h2>Absolute URLs</h2>
-<p><a href="https://www.google.com/" target="_blank">Google</a></p>
+    <!-- ==================== HEADER / NAVBAR ==================== -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-[#F8FAFC]/95 dark:bg-slate-950/95 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Logo: HappyCode -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-teal-500 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-code text-base"></i>
+                    </div>
+                    <span class="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">
+                        Happy<span class="text-sky-600 dark:text-sky-400">Code</span>
+                    </span>
+                </a>
 
-<h2>Các trang</h2>
-<p><a href="wokwi_micropython_1.html">Learn by Wokwi - 1</a></p>
-<p><a href="#">Learn by Wokwi - 2</a></p>
-<p><a href="#">Learn by Wokwi - 3</a></p>
+                <!-- Navigation & Theme Toggle -->
+                <div class="flex items-center gap-6 sm:gap-8">
+                    <nav class="hidden md:flex items-center gap-8 text-[17px] lg:text-[18px] font-medium text-slate-700 dark:text-slate-200">
+                        <a href="#interdisciplinary" class="hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                            Liên ngành
+                        </a>
 
-<br>
-<p><a href="lesson_core.html">Lesson about Core programming</a></p>
-<p><a href="lesson_sort.html">Lesson about Sort</a></p>
-<p><a href="lesson_search.html">Lesson about Search</a></p>
+                        <!-- Dropdown Menu: Nội dung -->
+                        <div id="navDropdownWrapper" class="relative">
+                            <button id="navDropdownBtn" type="button" aria-expanded="false" aria-haspopup="true" class="inline-flex items-center gap-2 py-2 hover:text-sky-600 dark:hover:text-sky-400 transition-colors focus:outline-none">
+                                <span>Nội dung</span>
+                                <i id="navDropdownChevron" class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
+                            </button>
 
+                            <!-- Dropdown Panel -->
+                            <div id="navDropdownMenu" class="hidden absolute right-0 mt-2 w-72 rounded-2xl border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl py-2.5 z-50">
+                                <div class="px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400">
+                                    IOT
+                                </div>
+                                <a href="#wokwi-1" data-lesson="wokwi-1" class="dropdown-lesson-link flex items-center justify-between px-4 py-2.5 text-[16px] font-medium text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                    <span>Learn by Wokwi - 1</span>
+                                    <span class="text-xs font-semibold text-teal-600 dark:text-teal-400">IOT 01</span>
+                                </a>
+                                <a href="#wokwi-2" data-lesson="wokwi-2" class="dropdown-lesson-link flex items-center justify-between px-4 py-2.5 text-[16px] font-medium text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                    <span>Learn by Wokwi - 2</span>
+                                    <span class="text-xs font-semibold text-teal-600 dark:text-teal-400">IOT 02</span>
+                                </a>
+                                <a href="#wokwi-3" data-lesson="wokwi-3" class="dropdown-lesson-link flex items-center justify-between px-4 py-2.5 text-[16px] font-medium text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                    <span>Learn by Wokwi - 3</span>
+                                    <span class="text-xs font-semibold text-teal-600 dark:text-teal-400">IOT 03</span>
+                                </a>
+
+                                <!-- Thin Divider -->
+                                <div class="my-2 border-t border-slate-200 dark:border-slate-800"></div>
+
+                                <div class="px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+                                    CORE
+                                </div>
+                                <a href="#lesson-fundamentals" data-lesson="lesson-fundamentals" class="dropdown-lesson-link flex items-center justify-between px-4 py-2.5 text-[16px] font-medium text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                    <span>Fundamentals</span>
+                                    <span class="text-xs font-semibold text-sky-600 dark:text-sky-400">CORE 01</span>
+                                </a>
+                                <a href="#lesson-sort" data-lesson="lesson-sort" class="dropdown-lesson-link flex items-center justify-between px-4 py-2.5 text-[16px] font-medium text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                    <span>Sort Algorithms</span>
+                                    <span class="text-xs font-semibold text-sky-600 dark:text-sky-400">CORE 02</span>
+                                </a>
+                                <a href="#lesson-search" data-lesson="lesson-search" class="dropdown-lesson-link flex items-center justify-between px-4 py-2.5 text-[16px] font-medium text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                    <span>Search Algorithms</span>
+                                    <span class="text-xs font-semibold text-sky-600 dark:text-sky-400">CORE 03</span>
+                                </a>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <!-- Dark / Light Mode Toggle -->
+                    <button id="themeToggle" aria-label="Chuyển đổi giao diện Sáng/Tối" class="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:border-sky-400 dark:hover:border-sky-500 transition-colors">
+                        <i id="themeIcon" class="fa-solid fa-moon text-base"></i>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" aria-label="Mở menu" class="md:hidden p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200">
+                        <i class="fa-solid fa-bars text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-5 py-4 space-y-3">
+            <a href="#interdisciplinary" class="mobile-nav-link block py-2 text-[17px] font-semibold text-slate-800 dark:text-slate-100 hover:text-sky-600">
+                Liên ngành
+            </a>
+            <div class="pt-2 border-t border-slate-200/80 dark:border-slate-800/80">
+                <button id="mobileContentToggle" type="button" class="w-full flex items-center justify-between py-2 text-[17px] font-semibold text-slate-800 dark:text-slate-100">
+                    <span>Nội dung</span>
+                    <i id="mobileContentChevron" class="fa-solid fa-chevron-down text-xs transition-transform"></i>
+                </button>
+                <div id="mobileContentList" class="mt-1 pl-3 border-l-2 border-sky-500/40 space-y-1.5">
+                    <a href="#wokwi-1" data-lesson="wokwi-1" class="dropdown-lesson-link block py-2 text-[16px] font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600">Learn by Wokwi - 1</a>
+                    <a href="#wokwi-2" data-lesson="wokwi-2" class="dropdown-lesson-link block py-2 text-[16px] font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600">Learn by Wokwi - 2</a>
+                    <a href="#wokwi-3" data-lesson="wokwi-3" class="dropdown-lesson-link block py-2 text-[16px] font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600">Learn by Wokwi - 3</a>
+                    <div class="my-1.5 border-t border-slate-200 dark:border-slate-800"></div>
+                    <a href="#lesson-fundamentals" data-lesson="lesson-fundamentals" class="dropdown-lesson-link block py-2 text-[16px] font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600">Lesson about Fundamentals</a>
+                    <a href="#lesson-sort" data-lesson="lesson-sort" class="dropdown-lesson-link block py-2 text-[16px] font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600">Lesson about Sort</a>
+                    <a href="#lesson-search" data-lesson="lesson-search" class="dropdown-lesson-link block py-2 text-[16px] font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600">Lesson about Search</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="py-20 sm:py-28">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200/80 dark:border-sky-800/60 mb-7">
+                <i class="fa-solid fa-sparkles text-sky-500"></i>
+                Học lập trình nhanh gọn & hiệu quả với HappyCode
+            </span>
+
+            <h1 class="text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+                Lập Trình Hiệu Quả <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-teal-500 dark:from-sky-400 dark:to-teal-400">
+                    Tư Duy Liên Ngành
+                </span>
+            </h1>
+
+            <p class="mt-7 text-[18px] sm:text-[20px] text-slate-600 dark:text-slate-300 leading-[1.7] max-w-2xl mx-auto">
+                Tư duy Kết nối - Tương tác Trực quan 
+            </p>
+
+            <!-- Sơ đồ khái niệm -->
+            <div class="mt-11 inline-flex flex-wrap items-center justify-center gap-3 sm:gap-4 px-5 py-3.5 rounded-2xl bg-white dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 shadow-xs text-[15px] sm:text-[17px] font-semibold text-slate-800 dark:text-slate-200">
+                <span class="inline-flex items-center gap-2 text-sky-600 dark:text-sky-400">
+                    <i class="fa-solid fa-code-branch"></i> Ngôn ngữ lập trình
+                </span>
+                <i class="fa-solid fa-arrow-right text-xs text-slate-400"></i>
+                <span class="inline-flex items-center gap-2 text-teal-600 dark:text-teal-400">
+                    <i class="fa-solid fa-microchip"></i> IoT
+                </span>
+                <i class="fa-solid fa-arrow-right text-xs text-slate-400"></i>
+                <span class="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                    <i class="fa-solid fa-window-maximize"></i> Web
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== LIÊN NGÀNH (3 TRỤ CỘT TỐI GIẢN) ==================== -->
+    <section id="interdisciplinary" class="py-24 border-t border-slate-200/70 dark:border-slate-800/70 bg-white dark:bg-slate-900/40 scroll-mt-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">Tư duy kết nối</span>
+                <h2 class="text-[2.25rem] sm:text-[2.5rem] font-bold text-slate-900 dark:text-white mt-2 leading-tight">
+                    Lập trình Liên ngành
+                </h2>
+                <p class="text-[18px] text-slate-600 dark:text-slate-300 mt-4 leading-[1.7]">
+                    Hiểu sâu toàn cảnh hệ thống từ xử lý dữ liệu, phần cứng nhúng đến giao diện người dùng.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-7">
+                <!-- Trụ cột 1 -->
+                <div class="p-8 rounded-2xl bg-[#F8FAFC] dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-sky-400 dark:hover:border-sky-600 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl mb-6">
+                        <i class="fa-solid fa-code-branch"></i>
+                    </div>
+                    <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white mb-3 leading-snug">
+                        Ngôn ngữ lập trình & Thuật toán
+                    </h3>
+                    <p class="text-[17px] text-slate-600 dark:text-slate-300 leading-[1.7]">
+                        Nắm vững cấu trúc dữ liệu, các thuật toán sắp xếp (Sort), tìm kiếm (Search) và tư duy tối ưu hóa giải thuật trên đa ngôn ngữ lập trình.
+                    </p>
+                </div>
+
+                <!-- Trụ cột 2 -->
+                <div class="p-8 rounded-2xl bg-[#F8FAFC] dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-teal-400 dark:hover:border-teal-600 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-950 text-teal-600 dark:text-teal-400 flex items-center justify-center text-xl mb-6">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white mb-3 leading-snug">
+                        Phần cứng & IoT (Wokwi)
+                    </h3>
+                    <p class="text-[17px] text-slate-600 dark:text-slate-300 leading-[1.7]">
+                        Thực hành trực tiếp trên trình mô phỏng Wokwi với vi điều khiển, đọc tín hiệu cảm biến, điều khiển ngoại vi và truyền dữ liệu qua mạng.
+                    </p>
+                </div>
+
+                <!-- Trụ cột 3 -->
+                <div class="p-8 rounded-2xl bg-[#F8FAFC] dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-600 transition-colors">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl mb-6">
+                        <i class="fa-solid fa-window-maximize"></i>
+                    </div>
+                    <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white mb-3 leading-snug">
+                        Giao diện Front-end trực quan
+                    </h3>
+                    <p class="text-[17px] text-slate-600 dark:text-slate-300 leading-[1.7]">
+                        Xây dựng giao diện Web hiện đại để hiển thị dữ liệu thời gian thực, mô phỏng trực quan thuật toán và tương tác điều khiển thiết bị từ xa.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== NỘI DUNG CÁC PHẦN & THỰC HÀNH ==================== -->
+    <section id="courses" class="py-24 border-t border-slate-200/70 dark:border-slate-800/70 scroll-mt-20">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="text-sm font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400">Nội dung</span>
+                <h2 class="text-[2.25rem] sm:text-[2.5rem] font-bold text-slate-900 dark:text-white mt-2 leading-tight">
+                    Bài học & Thực hành
+                </h2>
+                <p class="text-[18px] text-slate-600 dark:text-slate-300 mt-4 leading-[1.7]">
+                    Chọn từng phần bên dưới để xem mô tả và bắt đầu hành trình học tập.
+                </p>
+            </div>
+
+            <!-- NHÓM 1: IOT -->
+            <div id="wokwi-labs" class="scroll-mt-24">
+                <div class="mb-7">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-teal-600 dark:text-teal-400">SECTION - IOT</span>
+                    <h3 class="text-[1.65rem] sm:text-[1.85rem] font-bold text-slate-900 dark:text-white mt-1">
+                        Thực hành IoT mô phỏng (Wokwi)
+                    </h3>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-7">
+                    <!-- Card 1: Learn by Wokwi - 1 -->
+                    <a href="#wokwi-1" data-lesson="wokwi-1" class="lesson-card group block p-7 rounded-2xl bg-white dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-teal-500 dark:hover:border-teal-400 hover:-translate-y-0.5 shadow-xs hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg text-sm font-semibold bg-teal-50 dark:bg-teal-950/70 text-teal-700 dark:text-teal-300">
+                                IOT 01
+                            </span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-sm text-slate-400 group-hover:text-teal-500 transition-colors"></i>
+                        </div>
+                        <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors leading-snug">
+                            Learn by Wokwi - 1
+                        </h3>
+                        <p class="text-[17px] text-slate-600 dark:text-slate-300 mt-3 leading-[1.7]">
+                            Làm quen vi điều khiển, GPIO và cảm biến cơ bản. Thực hành điều khiển LED, nút nhấn và đọc tín hiệu số đầu vào.
+                        </p>
+                    </a>
+
+                    <!-- Card 2: Learn by Wokwi - 2 -->
+                    <a href="#wokwi-2" data-lesson="wokwi-2" class="lesson-card group block p-7 rounded-2xl bg-white dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-teal-500 dark:hover:border-teal-400 hover:-translate-y-0.5 shadow-xs hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg text-sm font-semibold bg-teal-50 dark:bg-teal-950/70 text-teal-700 dark:text-teal-300">
+                                IOT 02
+                            </span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-sm text-slate-400 group-hover:text-teal-500 transition-colors"></i>
+                        </div>
+                        <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors leading-snug">
+                            Learn by Wokwi - 2
+                        </h3>
+                        <p class="text-[17px] text-slate-600 dark:text-slate-300 mt-3 leading-[1.7]">
+                            Giao tiếp dữ liệu, xử lý tín hiệu và điều khiển thiết bị thông qua bộ chuyển đổi ADC, xung PWM và màn hình OLED.
+                        </p>
+                    </a>
+
+                    <!-- Card 3: Learn by Wokwi - 3 -->
+                    <a href="#wokwi-3" data-lesson="wokwi-3" class="lesson-card group block p-7 rounded-2xl bg-white dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-teal-500 dark:hover:border-teal-400 hover:-translate-y-0.5 shadow-xs hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg text-sm font-semibold bg-teal-50 dark:bg-teal-950/70 text-teal-700 dark:text-teal-300">
+                                IOT 03
+                            </span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-sm text-slate-400 group-hover:text-teal-500 transition-colors"></i>
+                        </div>
+                        <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors leading-snug">
+                            Learn by Wokwi - 3
+                        </h3>
+                        <p class="text-[17px] text-slate-600 dark:text-slate-300 mt-3 leading-[1.7]">
+                            Kết nối mạng, truyền dữ liệu IoT lên giao diện Web thông qua Wi-Fi, chuẩn hóa gói tin và giao tiếp thời gian thực.
+                        </p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- NHÓM 2: CORE -->
+            <div id="algorithm-lessons" class="scroll-mt-24">
+                <div class="mb-7">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400">SECTION - CORE</span>
+                    <h3 class="text-[1.65rem] sm:text-[1.85rem] font-bold text-slate-900 dark:text-white mt-1">
+                        Bài học Nền tảng & Thuật toán
+                    </h3>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-7">
+                    <!-- Card 4: Lesson about Fundamentals -->
+                    <a href="#lesson-fundamentals" data-lesson="lesson-fundamentals" class="lesson-card group block p-7 rounded-2xl bg-white dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-sky-500 dark:hover:border-sky-400 hover:-translate-y-0.5 shadow-xs hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg text-sm font-semibold bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300">
+                                CORE 01
+                            </span>
+                            <i class="fa-solid fa-book-open text-sm text-slate-400 group-hover:text-sky-500 transition-colors"></i>
+                        </div>
+                        <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
+                            Lesson about Fundamentals
+                        </h3>
+                        <p class="text-[17px] text-slate-600 dark:text-slate-300 mt-3 leading-[1.7]">
+                            Tư duy lập trình cốt lõi, biến, kiểu dữ liệu, cấu trúc điều khiển và hàm trong phát triển phần mềm và hệ thống nhúng.
+                        </p>
+                    </a>
+
+                    <!-- Card 5: Lesson about Sort -->
+                    <a href="#lesson-sort" data-lesson="lesson-sort" class="lesson-card group block p-7 rounded-2xl bg-white dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-sky-500 dark:hover:border-sky-400 hover:-translate-y-0.5 shadow-xs hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg text-sm font-semibold bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300">
+                                CORE 02
+                            </span>
+                            <i class="fa-solid fa-arrow-down-wide-short text-sm text-slate-400 group-hover:text-sky-500 transition-colors"></i>
+                        </div>
+                        <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
+                            Lesson about Sort
+                        </h3>
+                        <p class="text-[17px] text-slate-600 dark:text-slate-300 mt-3 leading-[1.7]">
+                            Các thuật toán sắp xếp dữ liệu (Bubble, Selection, Merge, Quick Sort) và trực quan hóa từng bước.
+                        </p>
+                    </a>
+
+                    <!-- Card 6: Lesson about Search -->
+                    <a href="#lesson-search" data-lesson="lesson-search" class="lesson-card group block p-7 rounded-2xl bg-white dark:bg-slate-900 border-[1.5px] border-slate-300 dark:border-slate-700 hover:border-sky-500 dark:hover:border-sky-400 hover:-translate-y-0.5 shadow-xs hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-lg text-sm font-semibold bg-sky-50 dark:bg-sky-950/70 text-sky-700 dark:text-sky-300">
+                                CORE 03
+                            </span>
+                            <i class="fa-solid fa-magnifying-glass text-sm text-slate-400 group-hover:text-sky-500 transition-colors"></i>
+                        </div>
+                        <h3 class="text-[1.45rem] sm:text-[1.55rem] font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
+                            Lesson about Search
+                        </h3>
+                        <p class="text-[17px] text-slate-600 dark:text-slate-300 mt-3 leading-[1.7]">
+                            Thuật toán tìm kiếm tuyến tính (Linear Search), tìm kiếm nhị phân (Binary Search), tìm kiếm tam phân (Ternary) ...
+                        </p>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="border-t border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-950 py-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-teal-500 flex items-center justify-center text-white text-sm">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <span class="font-bold text-lg text-slate-900 dark:text-white">HappyCode</span>
+                <span class="text-slate-300 dark:text-slate-700">|</span>
+                <span class="text-sm sm:text-base text-slate-500 dark:text-slate-400">Học lập trình nhanh gọn & hiệu quả</span>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">
+                &copy; 2026 - HappyCode.
+            </p>
+        </div>
+    </footer>
+
+    <!-- ==================== LESSON PREVIEW MODAL ==================== -->
+    <div id="lessonModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="relative w-full max-w-2xl rounded-2xl border-[1.5px] border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-300 dark:border-slate-700 flex items-center justify-between bg-[#F8FAFC] dark:bg-slate-950/60">
+                <div class="flex items-center gap-3">
+                    <span id="modalBadge" class="px-3 py-1 rounded-md text-sm font-semibold bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300">
+                        IOT 01
+                    </span>
+                    <span id="modalRouteTag" class="text-sm text-slate-400">#route</span>
+                </div>
+                <button id="closeModalBtn" aria-label="Đóng cửa sổ" class="w-9 h-9 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 flex items-center justify-center text-slate-500 transition-colors">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 sm:p-7 space-y-6 max-h-[75vh] overflow-y-auto text-[18px] leading-[1.7]">
+                <div>
+                    <h3 id="modalTitle" class="text-2xl sm:text-[1.75rem] font-bold text-slate-900 dark:text-white leading-snug">
+                        Tiêu đề bài học
+                    </h3>
+                    <p id="modalSubtitle" class="text-[18px] text-slate-600 dark:text-slate-300 mt-3 leading-[1.7]">
+                        Mô tả chi tiết bài học.
+                    </p>
+                </div>
+
+                <!-- Objectives -->
+                <div class="p-5 rounded-xl bg-[#F8FAFC] dark:bg-slate-950/60 border-[1.5px] border-slate-300 dark:border-slate-700">
+                    <h4 class="text-sm font-semibold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-3">
+                        Nội dung trọng tâm
+                    </h4>
+                    <ul id="modalObjectives" class="space-y-2.5 text-[18px] text-slate-700 dark:text-slate-200 list-disc list-inside leading-[1.65]">
+                        <!-- Injected dynamically -->
+                    </ul>
+                </div>
+
+                <!-- Interdisciplinary Connection -->
+                <div class="p-5 rounded-xl bg-teal-50/60 dark:bg-teal-950/20 border-[1.5px] border-teal-300/80 dark:border-teal-800/70">
+                    <h4 class="text-sm font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400 mb-2">
+                        Ứng dụng liên ngành
+                    </h4>
+                    <p id="modalApplication" class="text-[18px] text-slate-700 dark:text-slate-200 leading-[1.7]">
+                        <!-- Injected dynamically -->
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-slate-300 dark:border-slate-700 bg-[#F8FAFC] dark:bg-slate-950/60 flex items-center justify-between gap-3">
+                <span id="modalFeedback" class="text-sm text-slate-500 dark:text-slate-400">
+                    HappyCode Learning Preview
+                </span>
+                <div class="flex items-center gap-3">
+                    <button id="btnModalCancel" class="px-5 py-2.5 rounded-xl text-base font-medium border-[1.5px] border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                        Đóng
+                    </button>
+                    <a id="btnExternalLink" href="#" class="px-5 py-2.5 rounded-xl text-base font-semibold text-white bg-sky-600 hover:bg-sky-500 transition-colors inline-flex items-center gap-2">
+                        <span>Mở bài học</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Dark / Light Mode Toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const htmlEl = document.documentElement;
+
+            function updateThemeIcon() {
+                if (htmlEl.classList.contains('dark')) {
+                    themeIcon.className = 'fa-solid fa-sun text-base text-amber-400';
+                } else {
+                    themeIcon.className = 'fa-solid fa-moon text-base text-slate-600';
+                }
+            }
+            updateThemeIcon();
+
+            themeToggle.addEventListener('click', () => {
+                htmlEl.classList.toggle('dark');
+                updateThemeIcon();
+            });
+
+            // 2. Desktop Navbar Dropdown ('Nội dung')
+            const navDropdownWrapper = document.getElementById('navDropdownWrapper');
+            const navDropdownBtn = document.getElementById('navDropdownBtn');
+            const navDropdownMenu = document.getElementById('navDropdownMenu');
+            const navDropdownChevron = document.getElementById('navDropdownChevron');
+            let hoverCloseTimer = null;
+
+            function openDesktopDropdown() {
+                clearTimeout(hoverCloseTimer);
+                navDropdownMenu.classList.remove('hidden');
+                navDropdownBtn.setAttribute('aria-expanded', 'true');
+                navDropdownChevron.classList.add('rotate-180');
+            }
+
+            function closeDesktopDropdown() {
+                navDropdownMenu.classList.add('hidden');
+                navDropdownBtn.setAttribute('aria-expanded', 'false');
+                navDropdownChevron.classList.remove('rotate-180');
+            }
+
+            navDropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (navDropdownMenu.classList.contains('hidden')) {
+                    openDesktopDropdown();
+                } else {
+                    closeDesktopDropdown();
+                }
+            });
+
+            navDropdownWrapper.addEventListener('mouseenter', () => {
+                openDesktopDropdown();
+            });
+
+            navDropdownWrapper.addEventListener('mouseleave', () => {
+                hoverCloseTimer = setTimeout(closeDesktopDropdown, 180);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!navDropdownWrapper.contains(e.target)) {
+                    closeDesktopDropdown();
+                }
+            });
+
+            // 3. Mobile Menu & Mobile 'Nội dung' Accordion
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileContentToggle = document.getElementById('mobileContentToggle');
+            const mobileContentList = document.getElementById('mobileContentList');
+            const mobileContentChevron = document.getElementById('mobileContentChevron');
+
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            mobileContentToggle.addEventListener('click', () => {
+                mobileContentList.classList.toggle('hidden');
+                mobileContentChevron.classList.toggle('rotate-180');
+            });
+
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // 4. Lesson Data for all 6 required items ('IOT 01'..'IOT 03' & 'CORE 01'..'CORE 03', no .cpp / .js code blocks)
+            const lessonsData = {
+                'wokwi-1': {
+                    badge: 'IOT 01',
+                    route: '#wokwi-1',
+                    title: 'Learn by Wokwi - 1',
+                    subtitle: 'Làm quen vi điều khiển ESP32/Arduino trên trình mô phỏng Wokwi, thao tác với chân GPIO, điều khiển đèn LED và đọc tín hiệu nút nhấn, cảm biến số cơ bản.',
+                    objectives: [
+                        'Hiểu vòng đời hoạt động của chương trình điều khiển nhúng.',
+                        'Điều khiển tín hiệu xuất/nhập số (Digital I/O) và xử lý chống dội nút nhấn.',
+                        'Thiết kế và mô phỏng mạch điện tử trực quan ngay trên trình duyệt.'
+                    ],
+                    application: 'Xây dựng nền tảng điều khiển phần cứng vật lý và hiểu cách trạng thái logic chuyển đổi thành hành động thực tế.',
+                    link: 'practice_iot_1.html'
+                },
+                'wokwi-2': {
+                    badge: 'IOT 02',
+                    route: '#wokwi-2',
+                    title: 'Learn by Wokwi - 2',
+                    subtitle: 'Giao tiếp dữ liệu ngoại vi, chuyển đổi tín hiệu tương tự sang số (ADC), điều chế độ rộng xung (PWM) điều khiển thiết bị và hiển thị thông số.',
+                    objectives: [
+                        'Đọc giá trị cảm biến biến thiên liên tục qua bộ chuyển đổi ADC.',
+                        'Sử dụng xung PWM để điều chỉnh độ sáng đèn hoặc góc quay động cơ.',
+                        'Giao tiếp chuẩn I2C hiển thị dữ liệu trực quan lên màn hình OLED.'
+                    ],
+                    application: 'Thu thập và chuẩn hóa dữ liệu môi trường (nhiệt độ, ánh sáng) từ cảm biến thực tế trước khi đưa vào xử lý thuật toán.',
+                    link: 'practice_iot_2.html'
+                },
+                'wokwi-3': {
+                    badge: 'IOT 03',
+                    route: '#wokwi-3',
+                    title: 'Learn by Wokwi - 3',
+                    subtitle: 'Kết nối mạng Wi-Fi trên vi điều khiển, đóng gói dữ liệu cảm biến và truyền tải lên giao diện Web Front-end theo thời gian thực.',
+                    objectives: [
+                        'Cấu hình kết nối mạng không dây trên môi trường mô phỏng Wokwi.',
+                        'Đóng gói dữ liệu cảm biến theo cấu trúc chuẩn hóa.',
+                        'Đồng bộ dữ liệu hai chiều giữa phần cứng IoT và giao diện người dùng.'
+                    ],
+                    application: 'Hoàn thiện vòng khép kín IoT — Front-end: giám sát thiết bị và điều khiển từ xa qua bảng điều khiển Web.',
+                    link: 'practice_iot_3.html'
+                },
+                'lesson-fundamentals': {
+                    badge: 'CORE 01',
+                    route: '#lesson-fundamentals',
+                    title: 'Lesson about Fundamentals',
+                    subtitle: 'Xây dựng tư duy lập trình cốt lõi: cách tổ chức biến, kiểu dữ liệu, cấu trúc rẽ nhánh, vòng lặp và thiết kế hàm tái sử dụng.',
+                    objectives: [
+                        'Nắm vững cách dữ liệu được lưu trữ, biểu diễn và xử lý trong bộ nhớ.',
+                        'Áp dụng thành thạo cấu trúc điều kiện, vòng lặp và tư duy chia nhỏ bài toán.',
+                        'Liên kết tư duy lập trình nhất quán giữa hệ thống nhúng và ứng dụng Web.'
+                    ],
+                    application: 'Tạo nền móng vững chắc để đọc hiểu, phân tích và đưa ra giải pháp.',
+                    link: 'lesson_fundamentals.html'
+                },
+                'lesson-sort': {
+                    badge: 'CORE 02',
+                    route: '#lesson-sort',
+                    title: 'Lesson about Sort',
+                    subtitle: 'Các thuật toán sắp xếp phổ biến như Bubble Sort, Selection Sort, Merge Sort và Quick Sort.',
+                    objectives: [
+                        'Tương tác trực quan từng bước các thuật toán sắp xếp.',
+                        'Phân tích và so sánh các thuật toán sắp xếp.'
+                    ],
+                    application: 'Ứng dụng lựa chọn thuật toán để sắp xếp dữ liệu hiệu quả.',
+                    link: 'lesson_search.html'
+                },
+                'lesson-search': {
+                    badge: 'CORE 03',
+                    route: '#lesson-search',
+                    title: 'Lesson about Search',
+                    subtitle: 'Các thuật toán tìm kiếm tuyến tính (Linear Search), tìm kiếm nhị phân (Binary Search)',
+                    objectives: [
+                        'Tương tác trực quan từng bước các thuật toán sắp xếp.',
+                        'Phân tích và so sánh các thuật toán sắp xếp.'
+                    ],
+                    application: 'Ứng dụng lựa chọn thuật toán để tìm kiếm hiệu quả.',
+                    link: 'lesson_sort.html'
+                }
+            };
+
+            // 5. Modal & Navigation Interactions
+            const lessonModal = document.getElementById('lessonModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const btnModalCancel = document.getElementById('btnModalCancel');
+            const btnExternalLink = document.getElementById('btnExternalLink');
+            const modalFeedback = document.getElementById('modalFeedback');
+            const coursesSection = document.getElementById('courses');
+
+            function openLessonModal(key) {
+                const data = lessonsData[key];
+                if (!data) return;
+
+                document.getElementById('modalBadge').textContent = data.badge;
+                document.getElementById('modalRouteTag').textContent = data.route;
+                document.getElementById('modalTitle').textContent = data.title;
+                document.getElementById('modalSubtitle').textContent = data.subtitle;
+                document.getElementById('modalApplication').textContent = data.application;
+                
+                btnExternalLink.setAttribute('href', data.link);
+                modalFeedback.textContent = 'HappyCode';
+
+                const objList = document.getElementById('modalObjectives');
+                objList.innerHTML = data.objectives.map(item => `<li>${item}</li>`).join('');
+
+                lessonModal.classList.remove('hidden');
+                lessonModal.classList.add('flex');
+            }
+
+            function closeLessonModal() {
+                lessonModal.classList.add('hidden');
+                lessonModal.classList.remove('flex');
+            }
+
+            // Clicking any card opens its preview modal
+            document.querySelectorAll('.lesson-card').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const key = link.getAttribute('data-lesson');
+                    if (key) {
+                        history.replaceState(null, '', link.getAttribute('href'));
+                        openLessonModal(key);
+                    }
+                });
+            });
+
+            // Clicking any item in 'Nội dung' dropdown closes menu, scrolls to lessons section, and opens modal
+            document.querySelectorAll('.dropdown-lesson-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const key = link.getAttribute('data-lesson');
+                    closeDesktopDropdown();
+                    mobileMenu.classList.add('hidden');
+                    if (coursesSection) {
+                        coursesSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    if (key) {
+                        history.replaceState(null, '', link.getAttribute('href'));
+                        openLessonModal(key);
+                    }
+                });
+            });
+
+            closeModalBtn.addEventListener('click', closeLessonModal);
+            btnModalCancel.addEventListener('click', closeLessonModal);
+            btnExternalLink.addEventListener('click', (e) => {
+                //e.preventDefault();
+                modalFeedback.textContent = 'Đang chuyển đến nội dung bài học...';
+                setTimeout(closeLessonModal, 500);
+            });
+
+            lessonModal.addEventListener('click', (e) => {
+                if (e.target === lessonModal) closeLessonModal();
+            });
+        });
+    </script>
 </body>
 </html>
